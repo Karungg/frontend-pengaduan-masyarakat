@@ -47,7 +47,7 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
 
     setTimeout(() => {
       setIsLoading(false)
-      navigate({ to: '/' })
+      navigate({ to: '/admin' })
     }, 1000)
   }
 
