@@ -63,6 +63,11 @@ export const sidebarData: SidebarData = {
           icon: ListTodo,
         },
         {
+          title: 'Complaints',
+          url: '/admin/complaints',
+          icon: ListTodo,
+        },
+        {
           title: 'Apps',
           url: '/admin/apps',
           icon: Package,

@@ -33,6 +33,7 @@ import { Route as AuthenticatedAdminUsersIndexRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminTasksIndexRouteImport } from './routes/_authenticated/admin/tasks/index'
 import { Route as AuthenticatedAdminSettingsIndexRouteImport } from './routes/_authenticated/admin/settings/index'
 import { Route as AuthenticatedAdminHelpCenterIndexRouteImport } from './routes/_authenticated/admin/help-center/index'
+import { Route as AuthenticatedAdminComplaintsIndexRouteImport } from './routes/_authenticated/admin/complaints/index'
 import { Route as AuthenticatedAdminChatsIndexRouteImport } from './routes/_authenticated/admin/chats/index'
 import { Route as AuthenticatedAdminAppsIndexRouteImport } from './routes/_authenticated/admin/apps/index'
 import { Route as AuthenticatedAdminSettingsNotificationsRouteImport } from './routes/_authenticated/admin/settings/notifications'
@@ -165,6 +166,12 @@ const AuthenticatedAdminHelpCenterIndexRoute =
     path: '/help-center/',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminComplaintsIndexRoute =
+  AuthenticatedAdminComplaintsIndexRouteImport.update({
+    id: '/complaints/',
+    path: '/complaints/',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminChatsIndexRoute =
   AuthenticatedAdminChatsIndexRouteImport.update({
     id: '/chats/',
@@ -235,6 +242,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings/notifications': typeof AuthenticatedAdminSettingsNotificationsRoute
   '/admin/apps': typeof AuthenticatedAdminAppsIndexRoute
   '/admin/chats': typeof AuthenticatedAdminChatsIndexRoute
+  '/admin/complaints': typeof AuthenticatedAdminComplaintsIndexRoute
   '/admin/help-center': typeof AuthenticatedAdminHelpCenterIndexRoute
   '/admin/settings/': typeof AuthenticatedAdminSettingsIndexRoute
   '/admin/tasks': typeof AuthenticatedAdminTasksIndexRoute
@@ -264,6 +272,7 @@ export interface FileRoutesByTo {
   '/admin/settings/notifications': typeof AuthenticatedAdminSettingsNotificationsRoute
   '/admin/apps': typeof AuthenticatedAdminAppsIndexRoute
   '/admin/chats': typeof AuthenticatedAdminChatsIndexRoute
+  '/admin/complaints': typeof AuthenticatedAdminComplaintsIndexRoute
   '/admin/help-center': typeof AuthenticatedAdminHelpCenterIndexRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsIndexRoute
   '/admin/tasks': typeof AuthenticatedAdminTasksIndexRoute
@@ -298,6 +307,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/settings/notifications': typeof AuthenticatedAdminSettingsNotificationsRoute
   '/_authenticated/admin/apps/': typeof AuthenticatedAdminAppsIndexRoute
   '/_authenticated/admin/chats/': typeof AuthenticatedAdminChatsIndexRoute
+  '/_authenticated/admin/complaints/': typeof AuthenticatedAdminComplaintsIndexRoute
   '/_authenticated/admin/help-center/': typeof AuthenticatedAdminHelpCenterIndexRoute
   '/_authenticated/admin/settings/': typeof AuthenticatedAdminSettingsIndexRoute
   '/_authenticated/admin/tasks/': typeof AuthenticatedAdminTasksIndexRoute
@@ -332,6 +342,7 @@ export interface FileRouteTypes {
     | '/admin/settings/notifications'
     | '/admin/apps'
     | '/admin/chats'
+    | '/admin/complaints'
     | '/admin/help-center'
     | '/admin/settings/'
     | '/admin/tasks'
@@ -361,6 +372,7 @@ export interface FileRouteTypes {
     | '/admin/settings/notifications'
     | '/admin/apps'
     | '/admin/chats'
+    | '/admin/complaints'
     | '/admin/help-center'
     | '/admin/settings'
     | '/admin/tasks'
@@ -394,6 +406,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/settings/notifications'
     | '/_authenticated/admin/apps/'
     | '/_authenticated/admin/chats/'
+    | '/_authenticated/admin/complaints/'
     | '/_authenticated/admin/help-center/'
     | '/_authenticated/admin/settings/'
     | '/_authenticated/admin/tasks/'
@@ -586,6 +599,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminHelpCenterIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/complaints/': {
+      id: '/_authenticated/admin/complaints/'
+      path: '/complaints'
+      fullPath: '/admin/complaints'
+      preLoaderRoute: typeof AuthenticatedAdminComplaintsIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/chats/': {
       id: '/_authenticated/admin/chats/'
       path: '/chats'
@@ -713,6 +733,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminErrorsErrorRoute: typeof AuthenticatedAdminErrorsErrorRoute
   AuthenticatedAdminAppsIndexRoute: typeof AuthenticatedAdminAppsIndexRoute
   AuthenticatedAdminChatsIndexRoute: typeof AuthenticatedAdminChatsIndexRoute
+  AuthenticatedAdminComplaintsIndexRoute: typeof AuthenticatedAdminComplaintsIndexRoute
   AuthenticatedAdminHelpCenterIndexRoute: typeof AuthenticatedAdminHelpCenterIndexRoute
   AuthenticatedAdminTasksIndexRoute: typeof AuthenticatedAdminTasksIndexRoute
   AuthenticatedAdminUsersIndexRoute: typeof AuthenticatedAdminUsersIndexRoute
@@ -726,6 +747,8 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminErrorsErrorRoute: AuthenticatedAdminErrorsErrorRoute,
     AuthenticatedAdminAppsIndexRoute: AuthenticatedAdminAppsIndexRoute,
     AuthenticatedAdminChatsIndexRoute: AuthenticatedAdminChatsIndexRoute,
+    AuthenticatedAdminComplaintsIndexRoute:
+      AuthenticatedAdminComplaintsIndexRoute,
     AuthenticatedAdminHelpCenterIndexRoute:
       AuthenticatedAdminHelpCenterIndexRoute,
     AuthenticatedAdminTasksIndexRoute: AuthenticatedAdminTasksIndexRoute,

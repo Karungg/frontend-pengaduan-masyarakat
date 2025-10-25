@@ -21,9 +21,7 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
 
 const formSchema = z.object({
-  email: z.email({
-    error: (iss) => (iss.input === '' ? 'Please enter your email' : undefined),
-  }),
+  username: z.string().min(1, 'Please enter your username'),
   password: z
     .string()
     .min(1, 'Please enter your password')
@@ -46,7 +44,7 @@ export function UserAuthForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
   })
@@ -62,7 +60,7 @@ export function UserAuthForm({
         // Mock successful authentication with expiry computed at success time
         const mockUser = {
           accountNo: 'ACC001',
-          email: data.email,
+          email: data.username,
           role: ['user'],
           exp: Date.now() + 24 * 60 * 60 * 1000, // 24 hours from now
         }
@@ -75,7 +73,7 @@ export function UserAuthForm({
         const targetPath = redirectTo || '/'
         navigate({ to: targetPath, replace: true })
 
-        return `Welcome back, ${data.email}!`
+        return `Welcome back, ${data.username}!`
       },
       error: 'Error',
     })
@@ -90,12 +88,12 @@ export function UserAuthForm({
       >
         <FormField
           control={form.control}
-          name='email'
+          name='username'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder='name@example.com' {...field} />
+                <Input placeholder='Enter your username' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
