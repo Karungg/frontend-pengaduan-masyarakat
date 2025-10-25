@@ -22,6 +22,7 @@ const formSchema = z
       error: (iss) =>
         iss.input === '' ? 'Please enter your email' : undefined,
     }),
+    username: z.string().min(1, 'Please enter your username'),
     password: z
       .string()
       .min(1, 'Please enter your password')
@@ -43,6 +44,7 @@ export function SignUpForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
+      username: '',
       password: '',
       confirmPassword: '',
     },
@@ -73,6 +75,19 @@ export function SignUpForm({
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input placeholder='name@example.com' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='username'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder='Enter your username' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
