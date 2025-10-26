@@ -1,9 +1,8 @@
-import { useState } from 'react'
-import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IconFacebook, IconGithub } from '@/assets/brand-icons'
+import { useNavigate } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
+import { useRegister } from '@/hooks/auth/use-register'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -15,55 +14,33 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
-
-const formSchema = z
-  .object({
-    email: z.email('Please enter a valid email address'),
-    username: z
-      .string()
-      .min(3, 'Username must be at least 3 characters long')
-      .max(20, 'Username must be less than 20 characters')
-      .regex(
-        /^[a-zA-Z0-9_]+$/,
-        'Username can only contain letters, numbers, and underscores'
-      ),
-    password: z
-      .string()
-      .min(7, 'Password must be at least 7 characters long')
-      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .regex(/[0-9]/, 'Password must contain at least one number'),
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  })
+import { registerSchema, type Register } from '../data/schema'
 
 export function SignUpForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLFormElement>) {
-  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<Register>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
-      email: '',
       username: '',
+      email: '',
       password: '',
-      confirmPassword: '',
+      role: 'USER', // or whatever default role you need
     },
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    setIsLoading(true)
-    // eslint-disable-next-line no-console
-    console.log(data)
+  const registerMutation = useRegister({
+    setFormError: form.setError,
+    onSuccess: () => {
+      navigate({ to: '/sign-in' })
+    },
+  })
 
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
+  function onSubmit(values: Register) {
+    registerMutation.mutate(values)
   }
 
   return (
@@ -75,16 +52,15 @@ export function SignUpForm({
       >
         <FormField
           control={form.control}
-          name='email'
+          name='username'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Username</FormLabel>
               <FormControl>
                 <Input
-                  placeholder='name@example.com'
-                  type='email'
-                  autoComplete='email'
-                  disabled={isLoading}
+                  placeholder='Masukkan username'
+                  autoComplete='username'
+                  disabled={registerMutation.isPending}
                   {...field}
                 />
               </FormControl>
@@ -94,15 +70,16 @@ export function SignUpForm({
         />
         <FormField
           control={form.control}
-          name='username'
+          name='email'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
-                  placeholder='Enter your username'
-                  autoComplete='username'
-                  disabled={isLoading}
+                  placeholder='nama@contoh.com'
+                  type='email'
+                  autoComplete='email'
+                  disabled={registerMutation.isPending}
                   {...field}
                 />
               </FormControl>
@@ -120,7 +97,7 @@ export function SignUpForm({
                 <PasswordInput
                   placeholder='********'
                   autoComplete='new-password'
-                  disabled={isLoading}
+                  disabled={registerMutation.isPending}
                   {...field}
                 />
               </FormControl>
@@ -128,57 +105,9 @@ export function SignUpForm({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name='confirmPassword'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
-              <FormControl>
-                <PasswordInput
-                  placeholder='********'
-                  autoComplete='new-password'
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button className='mt-2' disabled={isLoading}>
-          {isLoading ? 'Creating Account...' : 'Create Account'}
+        <Button className='mt-2' disabled={registerMutation.isPending}>
+          {registerMutation.isPending ? 'Membuat Akun...' : 'Buat Akun'}
         </Button>
-
-        <div className='relative my-2'>
-          <div className='absolute inset-0 flex items-center'>
-            <span className='w-full border-t' />
-          </div>
-          <div className='relative flex justify-center text-xs uppercase'>
-            <span className='bg-background text-muted-foreground px-2'>
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <div className='grid grid-cols-2 gap-2'>
-          <Button
-            variant='outline'
-            className='w-full'
-            type='button'
-            disabled={isLoading}
-          >
-            <IconGithub className='h-4 w-4' /> GitHub
-          </Button>
-          <Button
-            variant='outline'
-            className='w-full'
-            type='button'
-            disabled={isLoading}
-          >
-            <IconFacebook className='h-4 w-4' /> Facebook
-          </Button>
-        </div>
       </form>
     </Form>
   )
