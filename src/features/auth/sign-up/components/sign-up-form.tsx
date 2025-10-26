@@ -28,7 +28,7 @@ export function SignUpForm({
       username: '',
       email: '',
       password: '',
-      role: 'USER', // or whatever default role you need
+      role: 'USER',
     },
   })
 

@@ -1,0 +1,81 @@
+import axios from 'axios'
+// eslint-disable-next-line no-duplicate-imports
+import type { AxiosError } from 'axios'
+import type { UseFormSetError } from 'react-hook-form'
+import { useMutation } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
+import { toast } from 'sonner'
+import { login } from '@/features/auth/sign-in/data/api'
+import type { Login } from '@/features/auth/sign-in/data/schema'
+
+interface ApiErrorResponse {
+  code: number
+  status: string
+  message: string
+  errors?: Record<string, string[]>
+}
+
+interface UseLoginOptions {
+  onSuccess?: () => void
+  setFormError?: UseFormSetError<Login>
+}
+
+export const useLogin = ({ onSuccess, setFormError }: UseLoginOptions = {}) => {
+  const navigate = useNavigate()
+
+  return useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      toast.success(data.message || 'Login berhasil!', {
+        duration: 3000,
+      })
+
+      if (onSuccess) {
+        onSuccess()
+      } else {
+        navigate({ to: '/' })
+      }
+    },
+    onError: (error: Error) => {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ApiErrorResponse>
+        const errorData = axiosError.response?.data
+
+        if (
+          axiosError.response?.status === 400 &&
+          errorData?.errors &&
+          setFormError
+        ) {
+          Object.entries(errorData.errors).forEach(([fieldName, messages]) => {
+            if (Array.isArray(messages) && messages.length > 0) {
+              setFormError(fieldName as keyof Login, {
+                type: 'server',
+                message: messages[0],
+              })
+            }
+          })
+
+          toast.error(
+            errorData.message ||
+              'Terjadi kesalahan validasi. Periksa kembali form Anda.',
+            {
+              duration: 3000,
+            }
+          )
+        } else if (errorData?.message) {
+          toast.error(errorData.message, {
+            duration: 3000,
+          })
+        } else {
+          toast.error('Terjadi kesalahan. Silakan coba lagi.', {
+            duration: 3000,
+          })
+        }
+      } else {
+        toast.error('Terjadi kesalahan yang tidak terduga.', {
+          duration: 3000,
+        })
+      }
+    },
+  })
+}
