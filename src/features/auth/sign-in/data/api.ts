@@ -1,7 +1,7 @@
 import { apiClient } from '@/config/api'
 import type { Login } from './schema'
 
-interface LoginResponse {
+export interface LoginResponse {
   code: number
   status: string
   message: string

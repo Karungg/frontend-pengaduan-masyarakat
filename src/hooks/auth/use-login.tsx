@@ -5,7 +5,8 @@ import type { UseFormSetError } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
-import { login } from '@/features/auth/sign-in/data/api'
+import { useAuthStore } from '@/stores/auth-store'
+import { login, type LoginResponse } from '@/features/auth/sign-in/data/api'
 import type { Login } from '@/features/auth/sign-in/data/schema'
 
 interface ApiErrorResponse {
@@ -22,10 +23,17 @@ interface UseLoginOptions {
 
 export const useLogin = ({ onSuccess, setFormError }: UseLoginOptions = {}) => {
   const navigate = useNavigate()
+  const { setAccessToken } = useAuthStore((state) => state.auth)
 
   return useMutation({
     mutationFn: login,
-    onSuccess: (data) => {
+    onSuccess: (data: LoginResponse) => {
+      const token = data.data.token
+
+      if (token) {
+        setAccessToken(token)
+      }
+
       toast.success(data.message || 'Login berhasil!', {
         duration: 3000,
       })
