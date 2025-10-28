@@ -5,7 +5,10 @@ import type { UseFormSetError } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
-import { register } from '@/features/auth/sign-up/data/api'
+import {
+  register,
+  type RegisterResponse,
+} from '@/features/auth/sign-up/data/api'
 import type { Register } from '@/features/auth/sign-up/data/schema'
 
 interface ApiErrorResponse {
@@ -28,7 +31,7 @@ export const useRegister = ({
 
   return useMutation({
     mutationFn: register,
-    onSuccess: (data) => {
+    onSuccess: (data: RegisterResponse) => {
       toast.success(data.message || 'Registrasi berhasil!', {
         duration: 3000,
       })

@@ -33,7 +33,6 @@ interface AuthState {
   }
 }
 
-// Helper function to decode JWT and transform to AuthUser
 const decodeJWT = (token: string): AuthUser | null => {
   try {
     const decoded = jwtDecode<JWTPayload>(token)
@@ -50,7 +49,6 @@ const decodeJWT = (token: string): AuthUser | null => {
   }
 }
 
-// Helper function to check if token is expired
 const isTokenExpired = (exp: number): boolean => {
   return Date.now() >= exp * 1000
 }

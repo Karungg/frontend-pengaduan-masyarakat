@@ -1,7 +1,7 @@
 import { apiClient } from '@/config/api'
 import type { Register } from './schema'
 
-interface RegisterResponse {
+export interface RegisterResponse {
   code: number
   status: string
   message: string
