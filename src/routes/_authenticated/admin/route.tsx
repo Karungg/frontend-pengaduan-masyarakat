@@ -12,7 +12,7 @@ export const Route = createFileRoute('/_authenticated/admin')({
 
     if (!isAdmin()) {
       throw redirect({
-        to: '/',
+        to: '/403',
       })
     }
   },

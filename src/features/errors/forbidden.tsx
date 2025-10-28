@@ -1,9 +1,11 @@
 import { useNavigate, useRouter } from '@tanstack/react-router'
+import { useAuthStore } from '@/stores/auth-store'
 import { Button } from '@/components/ui/button'
 
 export function ForbiddenError() {
   const navigate = useNavigate()
   const { history } = useRouter()
+  const isAdmin = useAuthStore((state) => state.auth.isAdmin)
   return (
     <div className='h-svh'>
       <div className='m-auto flex h-full w-full flex-col items-center justify-center gap-2'>
@@ -17,7 +19,7 @@ export function ForbiddenError() {
           <Button variant='outline' onClick={() => history.go(-1)}>
             Go Back
           </Button>
-          <Button onClick={() => navigate({ to: '/admin' })}>
+          <Button onClick={() => navigate({ to: isAdmin() ? '/admin' : '/' })}>
             Back to Home
           </Button>
         </div>

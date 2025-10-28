@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { Loader2, LogIn } from 'lucide-react'
 import { IconFacebook, IconGithub } from '@/assets/brand-icons'
+import { useAuthStore } from '@/stores/auth-store'
 import { cn } from '@/lib/utils'
 import { useLogin } from '@/hooks/auth/use-login'
 import { Button } from '@/components/ui/button'
@@ -30,6 +31,7 @@ export function UserAuthForm({
 }: UserAuthFormProps) {
   const [isLoading] = useState(false)
   const navigate = useNavigate()
+  const { isAdmin } = useAuthStore.getState().auth
 
   const form = useForm<Login>({
     resolver: zodResolver(loginSchema),
@@ -42,7 +44,7 @@ export function UserAuthForm({
   const loginMutation = useLogin({
     setFormError: form.setError,
     onSuccess: () => {
-      navigate({ to: '/admin' })
+      navigate({ to: isAdmin() ? '/admin' : '/' })
     },
   })
 

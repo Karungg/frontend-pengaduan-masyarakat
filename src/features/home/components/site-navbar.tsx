@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Menu as MenuIcon } from 'lucide-react'
+import { useAuthStore } from '@/stores/auth-store'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -12,6 +13,7 @@ import {
   SheetTitle,
   SheetClose,
 } from '@/components/ui/sheet'
+import { SignOutDialog } from '@/components/sign-out-dialog'
 
 function Brand() {
   return (
@@ -111,13 +113,31 @@ export function Navbar() {
             </SheetContent>
           </Sheet>
 
-          <Button>
-            <a href='/sign-in' aria-label='Masuk atau kirim pengajuan'>
-              Masuk
-            </a>
-          </Button>
+          <AuthActions />
         </div>
       </div>
     </nav>
+  )
+}
+
+export function AuthActions() {
+  const [isSignOutOpen, setIsSignOutOpen] = useState(false)
+
+  const { isAuthenticated } = useAuthStore.getState().auth
+
+  return (
+    <>
+      {isAuthenticated() ? (
+        <Button onClick={() => setIsSignOutOpen(true)}>Logout</Button>
+      ) : (
+        <Button>
+          <a href='/sign-in' aria-label='Masuk atau kirim pengajuan'>
+            Masuk
+          </a>
+        </Button>
+      )}
+
+      <SignOutDialog open={isSignOutOpen} onOpenChange={setIsSignOutOpen} />
+    </>
   )
 }
