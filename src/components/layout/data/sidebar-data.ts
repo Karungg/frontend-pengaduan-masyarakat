@@ -21,6 +21,9 @@ import {
   AudioWaveform,
   Command,
   GalleryVerticalEnd,
+  User,
+  UserCheck,
+  UserPen,
 } from 'lucide-react'
 import { ClerkLogo } from '@/assets/clerk-logo'
 import { type SidebarData } from '../types'
@@ -80,8 +83,24 @@ export const sidebarData: SidebarData = {
         },
         {
           title: 'Users',
-          url: '/admin/users',
           icon: Users,
+          items: [
+            {
+              title: 'Admin',
+              url: '/admin/admins',
+              icon: UserCheck,
+            },
+            {
+              title: 'Agency',
+              url: '/admin/agencies',
+              icon: UserPen,
+            },
+            {
+              title: 'Citizen',
+              url: '/admin/users',
+              icon: User,
+            },
+          ],
         },
         {
           title: 'Secured by Clerk',

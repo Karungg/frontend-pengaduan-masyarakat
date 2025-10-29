@@ -1,18 +1,24 @@
+import { getRouteApi } from '@tanstack/react-router'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { ComplaintDialogs } from './components/complaint-dialogs'
-import { ComplaintPrimaryButtons } from './components/complaint-primary-buttons'
-import { ComplaintProvider } from './components/complaint-provider'
-import { ComplaintTable } from './components/complaint-table'
-import { complaints } from './data/complaints'
+import { AdminDialogs } from './components/admins-dialogs'
+import { AdminPrimaryButtons } from './components/admins-primary-buttons'
+import { AdminProvider } from './components/admins-provider'
+import { AdminTable } from './components/admins-table'
+import { admins } from './data/admins'
 
-export function Complaint() {
+const route = getRouteApi('/_authenticated/admin/admins/')
+
+export function Admins() {
+  const search = route.useSearch()
+  const navigate = route.useNavigate()
+
   return (
-    <ComplaintProvider>
+    <AdminProvider>
       <Header fixed>
         <Search />
         <div className='ms-auto flex items-center space-x-4'>
@@ -25,17 +31,17 @@ export function Complaint() {
       <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
         <div className='flex flex-wrap items-end justify-between gap-2'>
           <div>
-            <h2 className='text-2xl font-bold tracking-tight'>Complaint</h2>
+            <h2 className='text-2xl font-bold tracking-tight'>Admin List</h2>
             <p className='text-muted-foreground'>
-              Daftar pengaduan masyarakat.
+              Manage your admins and their roles here.
             </p>
           </div>
-          <ComplaintPrimaryButtons />
+          <AdminPrimaryButtons />
         </div>
-        <ComplaintTable data={complaints} />
+        <AdminTable data={admins} search={search} navigate={navigate} />
       </Main>
 
-      <ComplaintDialogs />
-    </ComplaintProvider>
+      <AdminDialogs />
+    </AdminProvider>
   )
 }
