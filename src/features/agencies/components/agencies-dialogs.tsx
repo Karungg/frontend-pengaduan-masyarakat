@@ -1,28 +1,28 @@
-import { AdminActionDialog } from './admins-action-dialog'
-import { AdminDeleteDialog } from './admins-delete-dialog'
-import { AdminInviteDialog } from './admins-invite-dialog'
-import { useAdmin } from './admins-provider'
+import { AgencyActionDialog } from './agencies-action-dialog'
+import { AgencyDeleteDialog } from './agencies-delete-dialog'
+import { AgencyInviteDialog } from './agencies-invite-dialog'
+import { useAgency } from './agencies-provider'
 
-export function AdminDialogs() {
-  const { open, setOpen, currentRow, setCurrentRow } = useAdmin()
+export function AgencyDialogs() {
+  const { open, setOpen, currentRow, setCurrentRow } = useAgency()
   return (
     <>
-      <AdminActionDialog
-        key='admin-add'
+      <AgencyActionDialog
+        key='agency-add'
         open={open === 'add'}
         onOpenChange={() => setOpen('add')}
       />
 
-      <AdminInviteDialog
-        key='admin-invite'
+      <AgencyInviteDialog
+        key='agency-invite'
         open={open === 'invite'}
         onOpenChange={() => setOpen('invite')}
       />
 
       {currentRow && (
         <>
-          <AdminActionDialog
-            key={`admin-edit-${currentRow.id}`}
+          <AgencyActionDialog
+            key={`agency-edit-${currentRow.id}`}
             open={open === 'edit'}
             onOpenChange={() => {
               setOpen('edit')
@@ -33,8 +33,8 @@ export function AdminDialogs() {
             currentRow={currentRow}
           />
 
-          <AdminDeleteDialog
-            key={`admin-delete-${currentRow.id}`}
+          <AgencyDeleteDialog
+            key={`agency-delete-${currentRow.id}`}
             open={open === 'delete'}
             onOpenChange={() => {
               setOpen('delete')

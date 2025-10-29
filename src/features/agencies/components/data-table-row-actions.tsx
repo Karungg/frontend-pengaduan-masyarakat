@@ -10,15 +10,15 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { type Admin } from '../data/schema'
-import { useAdmin } from './admins-provider'
+import { type Agency } from '../data/schema'
+import { useAgency } from './agencies-provider'
 
 type DataTableRowActionsProps = {
-  row: Row<Admin>
+  row: Row<Agency>
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
-  const { setOpen, setCurrentRow } = useAdmin()
+  const { setOpen, setCurrentRow } = useAgency()
   return (
     <>
       <DropdownMenu modal={false}>

@@ -5,20 +5,20 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { AdminDialogs } from './components/admins-dialogs'
-import { AdminPrimaryButtons } from './components/admins-primary-buttons'
-import { AdminProvider } from './components/admins-provider'
-import { AdminTable } from './components/admins-table'
-import { admins } from './data/admins'
+import { AgencyDialogs } from './components/agencies-dialogs'
+import { AgencyPrimaryButtons } from './components/agencies-primary-buttons'
+import { AgencyProvider } from './components/agencies-provider'
+import { AgencyTable } from './components/agencies-table'
+import { agencies } from './data/agencies'
 
-const route = getRouteApi('/_authenticated/admin/admins/')
+const route = getRouteApi('/_authenticated/admin/agencies/')
 
-export function Admins() {
+export function Agencies() {
   const search = route.useSearch()
   const navigate = route.useNavigate()
 
   return (
-    <AdminProvider>
+    <AgencyProvider>
       <Header fixed>
         <Search />
         <div className='ms-auto flex items-center space-x-4'>
@@ -31,17 +31,17 @@ export function Admins() {
       <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
         <div className='flex flex-wrap items-end justify-between gap-2'>
           <div>
-            <h2 className='text-2xl font-bold tracking-tight'>Admin List</h2>
+            <h2 className='text-2xl font-bold tracking-tight'>Agency List</h2>
             <p className='text-muted-foreground'>
-              Manage your admins and their roles here.
+              Manage your agencies and their roles here.
             </p>
           </div>
-          <AdminPrimaryButtons />
+          <AgencyPrimaryButtons />
         </div>
-        <AdminTable data={admins} search={search} navigate={navigate} />
+        <AgencyTable data={agencies} search={search} navigate={navigate} />
       </Main>
 
-      <AdminDialogs />
-    </AdminProvider>
+      <AgencyDialogs />
+    </AgencyProvider>
   )
 }

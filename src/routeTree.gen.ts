@@ -35,6 +35,7 @@ import { Route as AuthenticatedAdminSettingsIndexRouteImport } from './routes/_a
 import { Route as AuthenticatedAdminHelpCenterIndexRouteImport } from './routes/_authenticated/admin/help-center/index'
 import { Route as AuthenticatedAdminChatsIndexRouteImport } from './routes/_authenticated/admin/chats/index'
 import { Route as AuthenticatedAdminAppsIndexRouteImport } from './routes/_authenticated/admin/apps/index'
+import { Route as AuthenticatedAdminAgenciesIndexRouteImport } from './routes/_authenticated/admin/agencies/index'
 import { Route as AuthenticatedAdminAdminsIndexRouteImport } from './routes/_authenticated/admin/admins/index'
 import { Route as AuthenticatedAdminSettingsNotificationsRouteImport } from './routes/_authenticated/admin/settings/notifications'
 import { Route as AuthenticatedAdminSettingsDisplayRouteImport } from './routes/_authenticated/admin/settings/display'
@@ -178,6 +179,12 @@ const AuthenticatedAdminAppsIndexRoute =
     path: '/apps/',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminAgenciesIndexRoute =
+  AuthenticatedAdminAgenciesIndexRouteImport.update({
+    id: '/agencies/',
+    path: '/agencies/',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminAdminsIndexRoute =
   AuthenticatedAdminAdminsIndexRouteImport.update({
     id: '/admins/',
@@ -241,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings/display': typeof AuthenticatedAdminSettingsDisplayRoute
   '/admin/settings/notifications': typeof AuthenticatedAdminSettingsNotificationsRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsIndexRoute
+  '/admin/agencies': typeof AuthenticatedAdminAgenciesIndexRoute
   '/admin/apps': typeof AuthenticatedAdminAppsIndexRoute
   '/admin/chats': typeof AuthenticatedAdminChatsIndexRoute
   '/admin/help-center': typeof AuthenticatedAdminHelpCenterIndexRoute
@@ -271,6 +279,7 @@ export interface FileRoutesByTo {
   '/admin/settings/display': typeof AuthenticatedAdminSettingsDisplayRoute
   '/admin/settings/notifications': typeof AuthenticatedAdminSettingsNotificationsRoute
   '/admin/admins': typeof AuthenticatedAdminAdminsIndexRoute
+  '/admin/agencies': typeof AuthenticatedAdminAgenciesIndexRoute
   '/admin/apps': typeof AuthenticatedAdminAppsIndexRoute
   '/admin/chats': typeof AuthenticatedAdminChatsIndexRoute
   '/admin/help-center': typeof AuthenticatedAdminHelpCenterIndexRoute
@@ -306,6 +315,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/settings/display': typeof AuthenticatedAdminSettingsDisplayRoute
   '/_authenticated/admin/settings/notifications': typeof AuthenticatedAdminSettingsNotificationsRoute
   '/_authenticated/admin/admins/': typeof AuthenticatedAdminAdminsIndexRoute
+  '/_authenticated/admin/agencies/': typeof AuthenticatedAdminAgenciesIndexRoute
   '/_authenticated/admin/apps/': typeof AuthenticatedAdminAppsIndexRoute
   '/_authenticated/admin/chats/': typeof AuthenticatedAdminChatsIndexRoute
   '/_authenticated/admin/help-center/': typeof AuthenticatedAdminHelpCenterIndexRoute
@@ -341,6 +351,7 @@ export interface FileRouteTypes {
     | '/admin/settings/display'
     | '/admin/settings/notifications'
     | '/admin/admins'
+    | '/admin/agencies'
     | '/admin/apps'
     | '/admin/chats'
     | '/admin/help-center'
@@ -371,6 +382,7 @@ export interface FileRouteTypes {
     | '/admin/settings/display'
     | '/admin/settings/notifications'
     | '/admin/admins'
+    | '/admin/agencies'
     | '/admin/apps'
     | '/admin/chats'
     | '/admin/help-center'
@@ -405,6 +417,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/settings/display'
     | '/_authenticated/admin/settings/notifications'
     | '/_authenticated/admin/admins/'
+    | '/_authenticated/admin/agencies/'
     | '/_authenticated/admin/apps/'
     | '/_authenticated/admin/chats/'
     | '/_authenticated/admin/help-center/'
@@ -613,6 +626,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAppsIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/agencies/': {
+      id: '/_authenticated/admin/agencies/'
+      path: '/agencies'
+      fullPath: '/admin/agencies'
+      preLoaderRoute: typeof AuthenticatedAdminAgenciesIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/admins/': {
       id: '/_authenticated/admin/admins/'
       path: '/admins'
@@ -732,6 +752,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminErrorsErrorRoute: typeof AuthenticatedAdminErrorsErrorRoute
   AuthenticatedAdminAdminsIndexRoute: typeof AuthenticatedAdminAdminsIndexRoute
+  AuthenticatedAdminAgenciesIndexRoute: typeof AuthenticatedAdminAgenciesIndexRoute
   AuthenticatedAdminAppsIndexRoute: typeof AuthenticatedAdminAppsIndexRoute
   AuthenticatedAdminChatsIndexRoute: typeof AuthenticatedAdminChatsIndexRoute
   AuthenticatedAdminHelpCenterIndexRoute: typeof AuthenticatedAdminHelpCenterIndexRoute
@@ -746,6 +767,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
     AuthenticatedAdminErrorsErrorRoute: AuthenticatedAdminErrorsErrorRoute,
     AuthenticatedAdminAdminsIndexRoute: AuthenticatedAdminAdminsIndexRoute,
+    AuthenticatedAdminAgenciesIndexRoute: AuthenticatedAdminAgenciesIndexRoute,
     AuthenticatedAdminAppsIndexRoute: AuthenticatedAdminAppsIndexRoute,
     AuthenticatedAdminChatsIndexRoute: AuthenticatedAdminChatsIndexRoute,
     AuthenticatedAdminHelpCenterIndexRoute:

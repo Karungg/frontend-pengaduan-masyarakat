@@ -23,27 +23,21 @@ import {
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { roles } from '../data/data'
-import { type Admin } from '../data/schema'
-import { adminColumns as columns } from './admins-columns'
+import { type Agency } from '../data/schema'
+import { agencyColumns as columns } from './agencies-columns'
 import { DataTableBulkActions } from './data-table-bulk-actions'
 
 type DataTableProps = {
-  data: Admin[]
+  data: Agency[]
   search: Record<string, unknown>
   navigate: NavigateFn
 }
 
-export function AdminTable({ data, search, navigate }: DataTableProps) {
-  // Local UI-only states
+export function AgencyTable({ data, search, navigate }: DataTableProps) {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
 
-  // Local state management for table (uncomment to use local-only state, not synced with URL)
-  // const [columnFilters, onColumnFiltersChange] = useState<ColumnFiltersState>([])
-  // const [pagination, onPaginationChange] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 })
-
-  // Synced with URL states (keys/defaults mirror admins route search schema)
   const {
     columnFilters,
     onColumnFiltersChange,
@@ -56,14 +50,12 @@ export function AdminTable({ data, search, navigate }: DataTableProps) {
     pagination: { defaultPage: 1, defaultPageSize: 10 },
     globalFilter: { enabled: false },
     columnFilters: [
-      // username per-column text filter
       { columnId: 'username', searchKey: 'username', type: 'string' },
       { columnId: 'status', searchKey: 'status', type: 'array' },
       { columnId: 'role', searchKey: 'role', type: 'array' },
     ],
   })
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
@@ -95,13 +87,13 @@ export function AdminTable({ data, search, navigate }: DataTableProps) {
   return (
     <div
       className={cn(
-        'max-sm:has-[div[role="toolbar"]]:mb-16', // Add margin bottom to the table on mobile when the toolbar is visible
+        'max-sm:has-[div[role="toolbar"]]:mb-16',
         'flex flex-1 flex-col gap-4'
       )}
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter admins...'
+        searchPlaceholder='Filter agencies...'
         searchKey='username'
         filters={[
           {

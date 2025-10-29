@@ -10,8 +10,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import { type Admin } from '../data/schema'
-import { AdminMultiDeleteDialog } from './admins-multi-delete-dialog'
+import { type Agency } from '../data/schema'
+import { AgencyMultiDeleteDialog } from './agencies-multi-delete-dialog'
 
 type DataTableBulkActionsProps<TData> = {
   table: Table<TData>
@@ -24,34 +24,34 @@ export function DataTableBulkActions<TData>({
   const selectedRows = table.getFilteredSelectedRowModel().rows
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {
-    const selectedAdmins = selectedRows.map((row) => row.original as Admin)
+    const selectedAgencies = selectedRows.map((row) => row.original as Agency)
     toast.promise(sleep(2000), {
-      loading: `${status === 'active' ? 'Activating' : 'Deactivating'} admins...`,
+      loading: `${status === 'active' ? 'Activating' : 'Deactivating'} agencies...`,
       success: () => {
         table.resetRowSelection()
-        return `${status === 'active' ? 'Activated' : 'Deactivated'} ${selectedAdmins.length} admin${selectedAdmins.length > 1 ? 's' : ''}`
+        return `${status === 'active' ? 'Activated' : 'Deactivated'} ${selectedAgencies.length} agency${selectedAgencies.length > 1 ? 's' : ''}`
       },
-      error: `Error ${status === 'active' ? 'activating' : 'deactivating'} admins`,
+      error: `Error ${status === 'active' ? 'activating' : 'deactivating'} agencies`,
     })
     table.resetRowSelection()
   }
 
   const handleBulkInvite = () => {
-    const selectedAdmins = selectedRows.map((row) => row.original as Admin)
+    const selectedAgencies = selectedRows.map((row) => row.original as Agency)
     toast.promise(sleep(2000), {
-      loading: 'Inviting admins...',
+      loading: 'Inviting agencies...',
       success: () => {
         table.resetRowSelection()
-        return `Invited ${selectedAdmins.length} admin${selectedAdmins.length > 1 ? 's' : ''}`
+        return `Invited ${selectedAgencies.length} agency${selectedAgencies.length > 1 ? 's' : ''}`
       },
-      error: 'Error inviting admins',
+      error: 'Error inviting agencies',
     })
     table.resetRowSelection()
   }
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='admin'>
+      <BulkActionsToolbar table={table} entityName='agency'>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -59,15 +59,15 @@ export function DataTableBulkActions<TData>({
               size='icon'
               onClick={handleBulkInvite}
               className='size-8'
-              aria-label='Invite selected admins'
-              title='Invite selected admins'
+              aria-label='Invite selected agencies'
+              title='Invite selected agencies'
             >
               <Mail />
-              <span className='sr-only'>Invite selected admins</span>
+              <span className='sr-only'>Invite selected agencies</span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Invite selected admins</p>
+            <p>Invite selected agencies</p>
           </TooltipContent>
         </Tooltip>
 
@@ -78,15 +78,15 @@ export function DataTableBulkActions<TData>({
               size='icon'
               onClick={() => handleBulkStatusChange('active')}
               className='size-8'
-              aria-label='Activate selected admins'
-              title='Activate selected admins'
+              aria-label='Activate selected agencies'
+              title='Activate selected agencies'
             >
               <UserCheck />
-              <span className='sr-only'>Activate selected admins</span>
+              <span className='sr-only'>Activate selected agencies</span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Activate selected admins</p>
+            <p>Activate selected agencies</p>
           </TooltipContent>
         </Tooltip>
 
@@ -97,15 +97,15 @@ export function DataTableBulkActions<TData>({
               size='icon'
               onClick={() => handleBulkStatusChange('inactive')}
               className='size-8'
-              aria-label='Deactivate selected admins'
-              title='Deactivate selected admins'
+              aria-label='Deactivate selected agencies'
+              title='Deactivate selected agencies'
             >
               <UserX />
-              <span className='sr-only'>Deactivate selected admins</span>
+              <span className='sr-only'>Deactivate selected agencies</span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Deactivate selected admins</p>
+            <p>Deactivate selected agencies</p>
           </TooltipContent>
         </Tooltip>
 
@@ -116,20 +116,20 @@ export function DataTableBulkActions<TData>({
               size='icon'
               onClick={() => setShowDeleteConfirm(true)}
               className='size-8'
-              aria-label='Delete selected admins'
-              title='Delete selected admins'
+              aria-label='Delete selected agencies'
+              title='Delete selected agencies'
             >
               <Trash2 />
-              <span className='sr-only'>Delete selected admins</span>
+              <span className='sr-only'>Delete selected agencies</span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Delete selected admins</p>
+            <p>Delete selected agencies</p>
           </TooltipContent>
         </Tooltip>
       </BulkActionsToolbar>
 
-      <AdminMultiDeleteDialog
+      <AgencyMultiDeleteDialog
         table={table}
         open={showDeleteConfirm}
         onOpenChange={setShowDeleteConfirm}

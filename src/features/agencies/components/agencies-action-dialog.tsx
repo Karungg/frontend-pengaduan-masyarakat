@@ -25,7 +25,7 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
 import { SelectDropdown } from '@/components/select-dropdown'
 import { roles } from '../data/data'
-import { type Admin } from '../data/schema'
+import { type Agency } from '../data/schema'
 
 const formSchema = z
   .object({
@@ -91,21 +91,21 @@ const formSchema = z
       path: ['confirmPassword'],
     }
   )
-type AdminForm = z.infer<typeof formSchema>
+type AgencyForm = z.infer<typeof formSchema>
 
-type AdminActionDialogProps = {
-  currentRow?: Admin
+type AgencyActionDialogProps = {
+  currentRow?: Agency
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function AdminActionDialog({
+export function AgencyActionDialog({
   currentRow,
   open,
   onOpenChange,
-}: AdminActionDialogProps) {
+}: AgencyActionDialogProps) {
   const isEdit = !!currentRow
-  const form = useForm<AdminForm>({
+  const form = useForm<AgencyForm>({
     resolver: zodResolver(formSchema),
     defaultValues: isEdit
       ? {
@@ -127,7 +127,7 @@ export function AdminActionDialog({
         },
   })
 
-  const onSubmit = (values: AdminForm) => {
+  const onSubmit = (values: AgencyForm) => {
     form.reset()
     showSubmittedData(values)
     onOpenChange(false)
@@ -145,16 +145,16 @@ export function AdminActionDialog({
     >
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader className='text-start'>
-          <DialogTitle>{isEdit ? 'Edit Admin' : 'Add New Admin'}</DialogTitle>
+          <DialogTitle>{isEdit ? 'Edit Agency' : 'Add New Agency'}</DialogTitle>
           <DialogDescription>
-            {isEdit ? 'Update the admin here. ' : 'Create new admin here. '}
+            {isEdit ? 'Update the agency here. ' : 'Create new agency here. '}
             Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <div className='h-[26.25rem] w-[calc(100%+0.75rem)] overflow-y-auto py-1 pe-3'>
           <Form {...form}>
             <form
-              id='admin-form'
+              id='agency-form'
               onSubmit={form.handleSubmit(onSubmit)}
               className='space-y-4 px-0.5'
             >
@@ -316,7 +316,7 @@ export function AdminActionDialog({
           </Form>
         </div>
         <DialogFooter>
-          <Button type='submit' form='admin-form'>
+          <Button type='submit' form='agency-form'>
             Save changes
           </Button>
         </DialogFooter>

@@ -5,10 +5,10 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
 import { callTypes, roles } from '../data/data'
-import { type Admin } from '../data/schema'
+import { type Agency } from '../data/schema'
 import { DataTableRowActions } from './data-table-row-actions'
 
-export const adminColumns: ColumnDef<Admin>[] = [
+export const agencyColumns: ColumnDef<Agency>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -110,16 +110,16 @@ export const adminColumns: ColumnDef<Admin>[] = [
     ),
     cell: ({ row }) => {
       const { role } = row.original
-      const adminType = roles.find(({ value }) => value === role)
+      const agencyType = roles.find(({ value }) => value === role)
 
-      if (!adminType) {
+      if (!agencyType) {
         return null
       }
 
       return (
         <div className='flex items-center gap-x-2'>
-          {adminType.icon && (
-            <adminType.icon size={16} className='text-muted-foreground' />
+          {agencyType.icon && (
+            <agencyType.icon size={16} className='text-muted-foreground' />
           )}
           <span className='text-sm capitalize'>{row.getValue('role')}</span>
         </div>

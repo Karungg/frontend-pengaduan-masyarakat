@@ -32,23 +32,23 @@ const formSchema = z.object({
   desc: z.string().optional(),
 })
 
-type AdminInviteForm = z.infer<typeof formSchema>
+type AgencyInviteForm = z.infer<typeof formSchema>
 
-type AdminInviteDialogProps = {
+type AgencyInviteDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function AdminInviteDialog({
+export function AgencyInviteDialog({
   open,
   onOpenChange,
-}: AdminInviteDialogProps) {
-  const form = useForm<AdminInviteForm>({
+}: AgencyInviteDialogProps) {
+  const form = useForm<AgencyInviteForm>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: '', role: '', desc: '' },
   })
 
-  const onSubmit = (values: AdminInviteForm) => {
+  const onSubmit = (values: AgencyInviteForm) => {
     form.reset()
     showSubmittedData(values)
     onOpenChange(false)
@@ -65,16 +65,16 @@ export function AdminInviteDialog({
       <DialogContent className='sm:max-w-md'>
         <DialogHeader className='text-start'>
           <DialogTitle className='flex items-center gap-2'>
-            <MailPlus /> Invite Admin
+            <MailPlus /> Invite Agency
           </DialogTitle>
           <DialogDescription>
-            Invite new admin to join your team by sending them an email
+            Invite new agency to join your team by sending them an email
             invitation. Assign a role to define their access level.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
-            id='admin-invite-form'
+            id='agency-invite-form'
             onSubmit={form.handleSubmit(onSubmit)}
             className='space-y-4'
           >
@@ -137,7 +137,7 @@ export function AdminInviteDialog({
           <DialogClose asChild>
             <Button variant='outline'>Cancel</Button>
           </DialogClose>
-          <Button type='submit' form='admin-invite-form'>
+          <Button type='submit' form='agency-invite-form'>
             Invite <Send />
           </Button>
         </DialogFooter>

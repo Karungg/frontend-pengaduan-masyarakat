@@ -1,32 +1,50 @@
 'use client'
 
 import { useState } from 'react'
+import { type Table } from '@tanstack/react-table'
 import { AlertTriangle } from 'lucide-react'
-import { showSubmittedData } from '@/lib/show-submitted-data'
+import { toast } from 'sonner'
+import { sleep } from '@/lib/utils'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { type Admin } from '../data/schema'
 
-type AdminDeleteDialogProps = {
+type AgencyMultiDeleteDialogProps<TData> = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow: Admin
+  table: Table<TData>
 }
 
-export function AdminDeleteDialog({
+const CONFIRM_WORD = 'DELETE'
+
+export function AgencyMultiDeleteDialog<TData>({
   open,
   onOpenChange,
-  currentRow,
-}: AdminDeleteDialogProps) {
+  table,
+}: AgencyMultiDeleteDialogProps<TData>) {
   const [value, setValue] = useState('')
 
+  const selectedRows = table.getFilteredSelectedRowModel().rows
+
   const handleDelete = () => {
-    if (value.trim() !== currentRow.username) return
+    if (value.trim() !== CONFIRM_WORD) {
+      toast.error(`Please type "${CONFIRM_WORD}" to confirm.`)
+      return
+    }
 
     onOpenChange(false)
-    showSubmittedData(currentRow, 'The following admin has been deleted:')
+
+    toast.promise(sleep(2000), {
+      loading: 'Deleting agencies...',
+      success: () => {
+        table.resetRowSelection()
+        return `Deleted ${selectedRows.length} ${
+          selectedRows.length > 1 ? 'agencies' : 'agency'
+        }`
+      },
+      error: 'Error',
+    })
   }
 
   return (
@@ -34,35 +52,30 @@ export function AdminDeleteDialog({
       open={open}
       onOpenChange={onOpenChange}
       handleConfirm={handleDelete}
-      disabled={value.trim() !== currentRow.username}
+      disabled={value.trim() !== CONFIRM_WORD}
       title={
         <span className='text-destructive'>
           <AlertTriangle
             className='stroke-destructive me-1 inline-block'
             size={18}
           />{' '}
-          Delete Admin
+          Delete {selectedRows.length}{' '}
+          {selectedRows.length > 1 ? 'agencies' : 'agency'}
         </span>
       }
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            Are you sure you want to delete{' '}
-            <span className='font-bold'>{currentRow.username}</span>?
-            <br />
-            This action will permanently remove the admin with the role of{' '}
-            <span className='font-bold'>
-              {currentRow.role.toUpperCase()}
-            </span>{' '}
-            from the system. This cannot be undone.
+            Are you sure you want to delete the selected agencies? <br />
+            This action cannot be undone.
           </p>
 
-          <Label className='my-2'>
-            Username:
+          <Label className='my-4 flex flex-col items-start gap-1.5'>
+            <span className=''>Confirm by typing "{CONFIRM_WORD}":</span>
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder='Enter username to confirm deletion.'
+              placeholder={`Type "${CONFIRM_WORD}" to confirm.`}
             />
           </Label>
 
