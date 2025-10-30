@@ -1,4 +1,5 @@
 import { getRouteApi } from '@tanstack/react-router'
+import { useAdmins } from '@/hooks/admin/use-admin'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -9,13 +10,25 @@ import { AdminDialogs } from './components/admins-dialogs'
 import { AdminPrimaryButtons } from './components/admins-primary-buttons'
 import { AdminProvider } from './components/admins-provider'
 import { AdminTable } from './components/admins-table'
-import { admins } from './data/admins'
+import { AdminListSchema } from './data/schema'
 
 const route = getRouteApi('/_authenticated/admin/admins/')
 
 export function Admins() {
   const search = route.useSearch()
   const navigate = route.useNavigate()
+
+  const { data: rawData, isLoading, isError } = useAdmins()
+
+  if (isLoading) {
+    return <div>Loading admins...</div>
+  }
+
+  if (isError) {
+    return <div>Error loading data. Please try again.</div>
+  }
+
+  const admins = AdminListSchema.parse(rawData || [])
 
   return (
     <AdminProvider>
