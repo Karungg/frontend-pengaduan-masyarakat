@@ -1,9 +1,10 @@
 'use client'
 
-import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { showSubmittedData } from '@/lib/show-submitted-data'
+import { Loader2 } from 'lucide-react'
+import { useCreateAdmin } from '@/hooks/admin/use-create-admin'
+import { useUpdateAdmin } from '@/hooks/admin/use-update-admin'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -23,70 +24,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
-import { type Admin } from '../data/schema'
-
-const formSchema = z
-  .object({
-    username: z.string().min(1, 'Username is required.'),
-    email: z.email({
-      message: 'Please enter a valid email address.',
-    }),
-    password: z.string().transform((pwd) => pwd.trim()),
-    role: z.string().optional(),
-    confirmPassword: z.string().transform((pwd) => pwd.trim()),
-    isEdit: z.boolean(),
-  })
-  .refine(
-    (data) => {
-      if (data.isEdit && !data.password) return true
-      return data.password.length > 0
-    },
-    {
-      message: 'Password is required.',
-      path: ['password'],
-    }
-  )
-  .refine(
-    ({ isEdit, password }) => {
-      if (isEdit && !password) return true
-      return password.length >= 8
-    },
-    {
-      message: 'Password must be at least 8 characters long.',
-      path: ['password'],
-    }
-  )
-  .refine(
-    ({ isEdit, password }) => {
-      if (isEdit && !password) return true
-      return /[a-z]/.test(password)
-    },
-    {
-      message: 'Password must contain at least one lowercase letter.',
-      path: ['password'],
-    }
-  )
-  .refine(
-    ({ isEdit, password }) => {
-      if (isEdit && !password) return true
-      return /\d/.test(password)
-    },
-    {
-      message: 'Password must contain at least one number.',
-      path: ['password'],
-    }
-  )
-  .refine(
-    ({ isEdit, password, confirmPassword }) => {
-      if (isEdit && !password) return true
-      return password === confirmPassword
-    },
-    {
-      message: "Passwords don't match.",
-      path: ['confirmPassword'],
-    }
-  )
-type AdminForm = z.infer<typeof formSchema>
+import { type AdminForm, formSchema, type Admin } from '../data/schema'
 
 type AdminActionDialogProps = {
   currentRow?: Admin
@@ -119,10 +57,30 @@ export function AdminActionDialog({
         },
   })
 
-  const onSubmit = (values: AdminForm) => {
+  const handleSuccess = () => {
     form.reset()
-    showSubmittedData(values)
     onOpenChange(false)
+  }
+
+  const createAdminMutation = useCreateAdmin({
+    setFormError: form.setError,
+    onSuccess: handleSuccess,
+  })
+
+  const updateAdminMutation = useUpdateAdmin({
+    setFormError: form.setError,
+    onSuccess: handleSuccess,
+  })
+
+  const isPending =
+    createAdminMutation.isPending || updateAdminMutation.isPending
+
+  const onSubmit = (values: AdminForm) => {
+    if (isEdit && currentRow) {
+      updateAdminMutation.mutate({ id: currentRow.id, data: values })
+    } else {
+      createAdminMutation.mutate(values)
+    }
   }
 
   const isPasswordTouched = !!form.formState.dirtyFields.password
@@ -229,7 +187,8 @@ export function AdminActionDialog({
           </Form>
         </div>
         <DialogFooter>
-          <Button type='submit' form='admin-form'>
+          <Button type='submit' form='admin-form' disabled={isPending}>
+            {isPending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
             Save changes
           </Button>
         </DialogFooter>

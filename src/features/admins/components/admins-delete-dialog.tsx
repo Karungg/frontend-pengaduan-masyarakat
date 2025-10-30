@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { AlertTriangle } from 'lucide-react'
-import { showSubmittedData } from '@/lib/show-submitted-data'
+import { AlertTriangle, Loader2 } from 'lucide-react'
+import { useDeleteAdmin } from '@/hooks/admin/use-delete-admin'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -22,19 +22,27 @@ export function AdminDeleteDialog({
 }: AdminDeleteDialogProps) {
   const [value, setValue] = useState('')
 
+  const deleteAdminMutation = useDeleteAdmin()
+
   const handleDelete = () => {
     if (value.trim() !== currentRow.username) return
 
-    onOpenChange(false)
-    showSubmittedData(currentRow, 'The following admin has been deleted:')
+    deleteAdminMutation.mutate(currentRow.id, {
+      onSuccess: () => {
+        setValue('')
+        onOpenChange(false)
+      },
+    })
   }
+
+  const isPending = deleteAdminMutation.isPending
 
   return (
     <ConfirmDialog
       open={open}
       onOpenChange={onOpenChange}
       handleConfirm={handleDelete}
-      disabled={value.trim() !== currentRow.username}
+      disabled={value.trim() !== currentRow.username || isPending}
       title={
         <span className='text-destructive'>
           <AlertTriangle
@@ -63,6 +71,7 @@ export function AdminDeleteDialog({
               value={value}
               onChange={(e) => setValue(e.target.value)}
               placeholder='Enter username to confirm deletion.'
+              disabled={isPending}
             />
           </Label>
 
@@ -74,7 +83,16 @@ export function AdminDeleteDialog({
           </Alert>
         </div>
       }
-      confirmText='Delete'
+      confirmText={
+        isPending ? (
+          <>
+            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+            Deleting...
+          </>
+        ) : (
+          'Delete'
+        )
+      }
       destructive
     />
   )

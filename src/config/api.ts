@@ -32,7 +32,6 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 || error.response?.status === 403) {
       const { reset } = useAuthStore.getState().auth
       reset()
-      window.location.href = '/sign-in'
     }
     return Promise.reject(error)
   }
