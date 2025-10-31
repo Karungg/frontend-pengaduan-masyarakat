@@ -21,7 +21,12 @@ export const getAllAgencies = async (): Promise<Agency[]> => {
 }
 
 export const createAgency = async (data: AgencyForm): Promise<Agency> => {
-  const { confirmPassword, isEdit, ...payload } = data
+  const { user, ...agencyData } = data
+  const { confirmPassword, isEdit, ...userPayload } = user
+  const payload = {
+    ...agencyData,
+    user: userPayload,
+  }
 
   const response = await apiClient.post<AgencyResponse>('/agencies', payload)
   return response.data.data
@@ -34,7 +39,12 @@ export const updateAgency = async ({
   id: string
   data: AgencyForm
 }): Promise<Agency> => {
-  const { confirmPassword, isEdit, ...payload } = data
+  const { user, ...agencyData } = data
+  const { confirmPassword, isEdit, ...userPayload } = user
+  const payload = {
+    ...agencyData,
+    user: userPayload,
+  }
 
   const response = await apiClient.put<AgencyResponse>(
     `/agencies/${id}`,

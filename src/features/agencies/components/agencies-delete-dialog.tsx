@@ -25,7 +25,7 @@ export function AgencyDeleteDialog({
   const deleteAgencyMutation = useDeleteAgency()
 
   const handleDelete = () => {
-    if (value.trim() !== currentRow.username) return
+    if (value.trim() !== currentRow.user.username) return
 
     deleteAgencyMutation.mutate(currentRow.id, {
       onSuccess: () => {
@@ -42,7 +42,7 @@ export function AgencyDeleteDialog({
       open={open}
       onOpenChange={onOpenChange}
       handleConfirm={handleDelete}
-      disabled={value.trim() !== currentRow.username || isPending}
+      disabled={value.trim() !== currentRow.user.username || isPending}
       title={
         <span className='text-destructive'>
           <AlertTriangle
@@ -56,11 +56,11 @@ export function AgencyDeleteDialog({
         <div className='space-y-4'>
           <p className='mb-2'>
             Are you sure you want to delete{' '}
-            <span className='font-bold'>{currentRow.username}</span>?
+            <span className='font-bold'>{currentRow.user.username}</span>?
             <br />
             This action will permanently remove the agency with the role of{' '}
             <span className='font-bold'>
-              {currentRow.role.toUpperCase()}
+              {currentRow.user.role.toUpperCase()}
             </span>{' '}
             from the system. This cannot be undone.
           </p>

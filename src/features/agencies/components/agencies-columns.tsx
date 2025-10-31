@@ -35,12 +35,12 @@ export const agencyColumns: ColumnDef<Agency>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'username',
+    accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Username' />
+      <DataTableColumnHeader column={column} title='Agency Name' />
     ),
     cell: ({ row }) => (
-      <LongText className='max-w-36 ps-3'>{row.getValue('username')}</LongText>
+      <LongText className='max-w-36 ps-3'>{row.getValue('name')}</LongText>
     ),
     meta: {
       className: cn(
@@ -51,12 +51,43 @@ export const agencyColumns: ColumnDef<Agency>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'email',
+    accessorKey: 'address',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Address' />
+    ),
+    cell: ({ row }) => (
+      <LongText className='max-w-48 ps-3'>{row.getValue('address')}</LongText>
+    ),
+  },
+  {
+    accessorKey: 'phone',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Phone' />
+    ),
+    cell: ({ row }) => (
+      <div className='w-fit ps-2 text-nowrap'>{row.getValue('phone')}</div>
+    ),
+  },
+  {
+    accessorFn: (row) => row.user?.username,
+    id: 'user.username',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Username' />
+    ),
+    cell: ({ row }) => (
+      <LongText className='max-w-36 ps-3'>
+        {row.original.user?.username}
+      </LongText>
+    ),
+  },
+  {
+    accessorFn: (row) => row.user?.email,
+    id: 'user.email',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Email' />
     ),
     cell: ({ row }) => (
-      <div className='w-fit ps-2 text-nowrap'>{row.getValue('email')}</div>
+      <div className='w-fit ps-2 text-nowrap'>{row.getValue('user.email')}</div>
     ),
   },
   {

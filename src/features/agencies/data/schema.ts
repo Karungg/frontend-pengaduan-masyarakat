@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const agencySchema = z.object({
+const userSchema = z.object({
   id: z.string(),
   username: z.string(),
   email: z.string(),
@@ -9,7 +9,17 @@ const agencySchema = z.object({
   updatedAt: z.string(),
 })
 
-export const formSchema = z
+const agencySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  address: z.string(),
+  phone: z.string(),
+  user: userSchema,
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+
+export const userFormSchema = z
   .object({
     username: z.string().min(1, 'Username is required.'),
     email: z.email({
@@ -71,7 +81,20 @@ export const formSchema = z
     }
   )
 
-export type AgencyForm = z.infer<typeof formSchema>
+export const agencyFormSchema = z.object({
+  name: z
+    .string()
+    .min(3, 'Agency name must be at least 3 characters.')
+    .max(255, 'Agency name cannot be more than 255 characters.'),
+  address: z.string().min(1, 'Address is required.'),
+  phone: z
+    .string()
+    .min(9, 'Phone number must be at least 9 characters.')
+    .max(20, 'Phone number cannot be more than 20 characters.'),
+  user: userFormSchema,
+})
+
+export type AgencyForm = z.infer<typeof agencyFormSchema>
 
 export type Agency = z.infer<typeof agencySchema>
 

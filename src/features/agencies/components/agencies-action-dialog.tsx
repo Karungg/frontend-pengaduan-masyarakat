@@ -23,8 +23,9 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Separator } from '@/components/ui/separator'
 import { PasswordInput } from '@/components/password-input'
-import { type AgencyForm, formSchema, type Agency } from '../data/schema'
+import { type AgencyForm, agencyFormSchema, type Agency } from '../data/schema'
 
 type AgencyActionDialogProps = {
   currentRow?: Agency
@@ -39,21 +40,31 @@ export function AgencyActionDialog({
 }: AgencyActionDialogProps) {
   const isEdit = !!currentRow
   const form = useForm<AgencyForm>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(agencyFormSchema),
     defaultValues: isEdit
       ? {
-          ...currentRow,
-          password: '',
-          confirmPassword: '',
-          isEdit,
+          name: currentRow.name,
+          address: currentRow.address,
+          phone: currentRow.phone,
+          user: {
+            ...currentRow.user,
+            password: '',
+            confirmPassword: '',
+            isEdit: true,
+          },
         }
       : {
-          username: '',
-          email: '',
-          role: 'AGENCY',
-          password: '',
-          confirmPassword: '',
-          isEdit,
+          name: '',
+          address: '',
+          phone: '',
+          user: {
+            username: '',
+            email: '',
+            role: 'AGENCY',
+            password: '',
+            confirmPassword: '',
+            isEdit: false,
+          },
         },
   })
 
@@ -83,7 +94,7 @@ export function AgencyActionDialog({
     }
   }
 
-  const isPasswordTouched = !!form.formState.dirtyFields.password
+  const isPasswordTouched = !!form.formState.dirtyFields.user?.password
 
   return (
     <Dialog
@@ -108,9 +119,68 @@ export function AgencyActionDialog({
               onSubmit={form.handleSubmit(onSubmit)}
               className='space-y-4 px-0.5'
             >
+              <h4 className='text-sm font-medium'>Agency Details</h4>
+              <Separator className='-mx-0.5' />
               <FormField
                 control={form.control}
-                name='username'
+                name='name'
+                render={({ field }) => (
+                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                    <FormLabel className='col-span-2 text-end'>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='Agency Name'
+                        className='col-span-4'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='col-span-4 col-start-3' />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='address'
+                render={({ field }) => (
+                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                    <FormLabel className='col-span-2 text-end'>
+                      Address
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='Agency Address'
+                        className='col-span-4'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='col-span-4 col-start-3' />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='phone'
+                render={({ field }) => (
+                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                    <FormLabel className='col-span-2 text-end'>Phone</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='+123456789'
+                        className='col-span-4'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='col-span-4 col-start-3' />
+                  </FormItem>
+                )}
+              />
+
+              <h4 className='pt-2 text-sm font-medium'>User Account</h4>
+              <Separator className='-mx-0.5' />
+
+              <FormField
+                control={form.control}
+                name='user.username'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
                     <FormLabel className='col-span-2 text-end'>
@@ -129,7 +199,7 @@ export function AgencyActionDialog({
               />
               <FormField
                 control={form.control}
-                name='email'
+                name='user.email'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
                     <FormLabel className='col-span-2 text-end'>Email</FormLabel>
@@ -146,7 +216,7 @@ export function AgencyActionDialog({
               />
               <FormField
                 control={form.control}
-                name='password'
+                name='user.password'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
                     <FormLabel className='col-span-2 text-end'>
@@ -165,7 +235,7 @@ export function AgencyActionDialog({
               />
               <FormField
                 control={form.control}
-                name='confirmPassword'
+                name='user.confirmPassword'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
                     <FormLabel className='col-span-2 text-end'>
