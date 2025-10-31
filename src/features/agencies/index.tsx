@@ -1,4 +1,5 @@
 import { getRouteApi } from '@tanstack/react-router'
+import { useAgencies } from '@/hooks/agency/use-agency'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -9,13 +10,25 @@ import { AgencyDialogs } from './components/agencies-dialogs'
 import { AgencyPrimaryButtons } from './components/agencies-primary-buttons'
 import { AgencyProvider } from './components/agencies-provider'
 import { AgencyTable } from './components/agencies-table'
-import { agencies } from './data/agencies'
+import { AgencyListSchema } from './data/schema'
 
 const route = getRouteApi('/_authenticated/admin/agencies/')
 
 export function Agencies() {
   const search = route.useSearch()
   const navigate = route.useNavigate()
+
+  const { data: rawData, isLoading, isError } = useAgencies()
+
+  if (isLoading) {
+    return <div>Loading agencies...</div>
+  }
+
+  if (isError) {
+    return <div>Error loading data. Please try again.</div>
+  }
+
+  const agencies = AgencyListSchema.parse(rawData || [])
 
   return (
     <AgencyProvider>
