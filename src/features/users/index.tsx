@@ -1,15 +1,16 @@
 import { getRouteApi } from '@tanstack/react-router'
+import { useUsers } from '@/hooks/user/use-user'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { UsersDialogs } from './components/users-dialogs'
-import { UsersPrimaryButtons } from './components/users-primary-buttons'
-import { UsersProvider } from './components/users-provider'
-import { UsersTable } from './components/users-table'
-import { users } from './data/users'
+import { UserDialogs } from './components/users-dialogs'
+import { UserPrimaryButtons } from './components/users-primary-buttons'
+import { UserProvider } from './components/users-provider'
+import { UserTable } from './components/users-table'
+import { UserListSchema } from './data/schema'
 
 const route = getRouteApi('/_authenticated/admin/users/')
 
@@ -17,8 +18,20 @@ export function Users() {
   const search = route.useSearch()
   const navigate = route.useNavigate()
 
+  const { data: rawData, isLoading, isError } = useUsers()
+
+  if (isLoading) {
+    return <div>Loading users...</div>
+  }
+
+  if (isError) {
+    return <div>Error loading data. Please try again.</div>
+  }
+
+  const users = UserListSchema.parse(rawData || [])
+
   return (
-    <UsersProvider>
+    <UserProvider>
       <Header fixed>
         <Search />
         <div className='ms-auto flex items-center space-x-4'>
@@ -36,12 +49,12 @@ export function Users() {
               Manage your users and their roles here.
             </p>
           </div>
-          <UsersPrimaryButtons />
+          <UserPrimaryButtons />
         </div>
-        <UsersTable data={users} search={search} navigate={navigate} />
+        <UserTable data={users} search={search} navigate={navigate} />
       </Main>
 
-      <UsersDialogs />
-    </UsersProvider>
+      <UserDialogs />
+    </UserProvider>
   )
 }

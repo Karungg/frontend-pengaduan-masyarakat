@@ -2,35 +2,35 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type User } from '../data/schema'
 
-type UsersDialogType = 'invite' | 'add' | 'edit' | 'delete'
+type UserDialogType = 'invite' | 'add' | 'edit' | 'delete'
 
-type UsersContextType = {
-  open: UsersDialogType | null
-  setOpen: (str: UsersDialogType | null) => void
+type UserContextType = {
+  open: UserDialogType | null
+  setOpen: (str: UserDialogType | null) => void
   currentRow: User | null
   setCurrentRow: React.Dispatch<React.SetStateAction<User | null>>
 }
 
-const UsersContext = React.createContext<UsersContextType | null>(null)
+const UserContext = React.createContext<UserContextType | null>(null)
 
-export function UsersProvider({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = useDialogState<UsersDialogType>(null)
+export function UserProvider({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useDialogState<UserDialogType>(null)
   const [currentRow, setCurrentRow] = useState<User | null>(null)
 
   return (
-    <UsersContext value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <UserContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
       {children}
-    </UsersContext>
+    </UserContext.Provider>
   )
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useUsers = () => {
-  const usersContext = React.useContext(UsersContext)
+export const useUser = () => {
+  const userContext = React.useContext(UserContext)
 
-  if (!usersContext) {
-    throw new Error('useUsers has to be used within <UsersContext>')
+  if (!userContext) {
+    throw new Error('useUser has to be used within <UserProvider>')
   }
 
-  return usersContext
+  return userContext
 }
