@@ -18,7 +18,7 @@ type UserMultiDeleteDialogProps<TData> = {
 
 const CONFIRM_WORD = 'DELETE'
 
-export function UsersMultiDeleteDialog<TData>({
+export function UserMultiDeleteDialog<TData>({
   open,
   onOpenChange,
   table,

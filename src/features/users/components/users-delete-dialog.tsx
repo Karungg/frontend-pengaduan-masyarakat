@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { AlertTriangle } from 'lucide-react'
-import { showSubmittedData } from '@/lib/show-submitted-data'
+import { AlertTriangle, Loader2 } from 'lucide-react'
+import { useDeleteUser } from '@/hooks/user/use-delete-user'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -15,26 +15,34 @@ type UserDeleteDialogProps = {
   currentRow: User
 }
 
-export function UsersDeleteDialog({
+export function UserDeleteDialog({
   open,
   onOpenChange,
   currentRow,
 }: UserDeleteDialogProps) {
   const [value, setValue] = useState('')
 
+  const deleteUserMutation = useDeleteUser()
+
   const handleDelete = () => {
     if (value.trim() !== currentRow.username) return
 
-    onOpenChange(false)
-    showSubmittedData(currentRow, 'The following user has been deleted:')
+    deleteUserMutation.mutate(currentRow.id, {
+      onSuccess: () => {
+        setValue('')
+        onOpenChange(false)
+      },
+    })
   }
+
+  const isPending = deleteUserMutation.isPending
 
   return (
     <ConfirmDialog
       open={open}
       onOpenChange={onOpenChange}
       handleConfirm={handleDelete}
-      disabled={value.trim() !== currentRow.username}
+      disabled={value.trim() !== currentRow.username || isPending}
       title={
         <span className='text-destructive'>
           <AlertTriangle
@@ -63,6 +71,7 @@ export function UsersDeleteDialog({
               value={value}
               onChange={(e) => setValue(e.target.value)}
               placeholder='Enter username to confirm deletion.'
+              disabled={isPending}
             />
           </Label>
 
@@ -74,7 +83,16 @@ export function UsersDeleteDialog({
           </Alert>
         </div>
       }
-      confirmText='Delete'
+      confirmText={
+        isPending ? (
+          <>
+            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+            Deleting...
+          </>
+        ) : (
+          'Delete'
+        )
+      }
       destructive
     />
   )

@@ -1,9 +1,9 @@
 import { MailPlus, UserPlus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useUsers } from './users-provider'
+import { useUser } from './users-provider'
 
-export function UsersPrimaryButtons() {
-  const { setOpen } = useUsers()
+export function UserPrimaryButtons() {
+  const { setOpen } = useUser()
   return (
     <div className='flex gap-2'>
       <Button
