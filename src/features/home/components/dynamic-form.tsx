@@ -15,28 +15,22 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 
-// import { toast } from "@/components/ui/use-sonner";
-
-// Types for the form
 type Jenis = 'Pengaduan' | 'Aspirasi'
 
 export function DynamicForm() {
   const [jenis, setJenis] = useState<Jenis>('Pengaduan')
   const [anonim, setAnonim] = useState<boolean>(false)
 
-  // Common fields
   const [judul, setJudul] = useState('')
   const [deskripsi, setDeskripsi] = useState('')
 
-  // Identity (hidden when anonim)
   const [nama, setNama] = useState('')
   const [email, setEmail] = useState('')
 
-  // Specific fields
-  const [kategori, setKategori] = useState('') // for Pengaduan
-  const [lokasi, setLokasi] = useState('') // for Pengaduan
-  const [topik, setTopik] = useState('') // for Aspirasi
-  const [manfaat, setManfaat] = useState('') // for Aspirasi
+  const [kategori, setKategori] = useState('')
+  const [lokasi, setLokasi] = useState('')
+  const [topik, setTopik] = useState('')
+  const [manfaat, setManfaat] = useState('')
 
   const resetSpecific = (target: Jenis) => {
     if (target === 'Pengaduan') {
@@ -50,26 +44,6 @@ export function DynamicForm() {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // In a real app, submit to an API route or server action
-    // console.log collected data
-    // console.log("[v0] Submit payload:", {
-    //   jenis,
-    //   anonim,
-    //   judul,
-    //   deskripsi,
-    //   identitas: anonim ? null : { nama, email },
-    //   spesifik:
-    //     jenis === "Pengaduan" ? { kategori, lokasi } : { topik, manfaat },
-    // });
-
-    // toast({
-    //   title: "Formulir dikirim",
-    //   description:
-    //     "Terima kasih. Pengajuan Anda telah diterima dan akan diproses.",
-    // });
-
-    // Optional: clear form
-    // setJudul(""); setDeskripsi(""); setNama(""); setEmail(""); setKategori(""); setLokasi(""); setTopik(""); setManfaat(""); setAnonim(false);
   }
 
   return (
@@ -85,7 +59,6 @@ export function DynamicForm() {
         </header>
 
         <div className='grid grid-cols-1 gap-4'>
-          {/* Jenis Select */}
           <div className='grid gap-2'>
             <Label htmlFor='jenis'>Jenis Pengajuan</Label>
             <Select
@@ -106,7 +79,6 @@ export function DynamicForm() {
             </Select>
           </div>
 
-          {/* Anonim switch */}
           <div className='border-border flex items-center justify-between rounded-md border p-3'>
             <div className='space-y-0.5'>
               <Label htmlFor='anonim'>Kirim secara anonim</Label>
@@ -122,7 +94,6 @@ export function DynamicForm() {
             />
           </div>
 
-          {/* Identitas (conditionally hidden) */}
           {!anonim && (
             <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
               <div className='grid gap-2'>
@@ -147,7 +118,6 @@ export function DynamicForm() {
             </div>
           )}
 
-          {/* Umum */}
           <div className='grid gap-2'>
             <Label htmlFor='judul'>Judul</Label>
             <Input
@@ -171,7 +141,6 @@ export function DynamicForm() {
             />
           </div>
 
-          {/* Spesifik by jenis */}
           {jenis === 'Pengaduan' ? (
             <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
               <div className='grid gap-2'>

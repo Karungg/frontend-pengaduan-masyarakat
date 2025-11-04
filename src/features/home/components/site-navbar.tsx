@@ -30,9 +30,9 @@ function Brand() {
 
 const links = [
   { to: '/', label: 'Beranda', useAnchor: false },
-  { to: '/#langkah', label: 'Langkah', useAnchor: true },
-  { to: '/#formulir', label: 'Formulir', useAnchor: true },
-  { to: '/#kontak', label: 'Kontak', useAnchor: true },
+  { to: '/#step', label: 'Langkah', useAnchor: true },
+  { to: '/#form', label: 'Formulir', useAnchor: true },
+  { to: '/#contact', label: 'Kontak', useAnchor: true },
 ]
 
 export function Navbar() {
@@ -47,7 +47,6 @@ export function Navbar() {
       <div className='mx-auto flex h-14 max-w-6xl items-center justify-between px-4'>
         <div className='flex items-center gap-6'>
           <Brand />
-          {/* desktop links */}
           <div className='hidden items-center gap-4 md:flex'>
             {links.map((l) =>
               l.useAnchor ? (
@@ -72,7 +71,6 @@ export function Navbar() {
         </div>
 
         <div className='flex items-center gap-2'>
-          {/* mobile menu using Sheet */}
           <Sheet open={open} onOpenChange={(v) => setOpen(v)}>
             <SheetTrigger asChild>
               <Button variant='ghost' className='md:hidden'>
