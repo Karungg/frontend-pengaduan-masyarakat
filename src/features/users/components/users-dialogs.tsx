@@ -3,7 +3,7 @@ import { UserDeleteDialog } from './users-delete-dialog'
 import { UserInviteDialog } from './users-invite-dialog'
 import { useUser } from './users-provider'
 
-export function UserDialogs() {
+export function UsersDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useUser()
   return (
     <>

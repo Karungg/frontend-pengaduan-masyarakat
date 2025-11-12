@@ -6,10 +6,10 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { UserDialogs } from './components/users-dialogs'
-import { UserPrimaryButtons } from './components/users-primary-buttons'
-import { UserProvider } from './components/users-provider'
-import { UserTable } from './components/users-table'
+import { UsersDialogs } from './components/users-dialogs'
+import { UsersPrimaryButtons } from './components/users-primary-buttons'
+import { UsersProvider } from './components/users-provider'
+import { UsersTable } from './components/users-table'
 import { UserListSchema } from './data/schema'
 
 const route = getRouteApi('/_authenticated/admin/users/')
@@ -31,7 +31,7 @@ export function Users() {
   const users = UserListSchema.parse(rawData || [])
 
   return (
-    <UserProvider>
+    <UsersProvider>
       <Header fixed>
         <Search />
         <div className='ms-auto flex items-center space-x-4'>
@@ -49,12 +49,12 @@ export function Users() {
               Manage your users and their roles here.
             </p>
           </div>
-          <UserPrimaryButtons />
+          <UsersPrimaryButtons />
         </div>
-        <UserTable data={users} search={search} navigate={navigate} />
+        <UsersTable data={users} search={search} navigate={navigate} />
       </Main>
 
-      <UserDialogs />
-    </UserProvider>
+      <UsersDialogs />
+    </UsersProvider>
   )
 }

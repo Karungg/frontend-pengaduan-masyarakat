@@ -13,7 +13,7 @@ type UserContextType = {
 
 const UserContext = React.createContext<UserContextType | null>(null)
 
-export function UserProvider({ children }: { children: React.ReactNode }) {
+export function UsersProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useDialogState<UserDialogType>(null)
   const [currentRow, setCurrentRow] = useState<User | null>(null)
 

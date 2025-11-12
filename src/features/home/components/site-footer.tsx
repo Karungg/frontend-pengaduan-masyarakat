@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 
 export function SiteFooter() {
   return (
-    <div id='kontak' className='bg-background'>
+    <div id='contact' className='bg-background'>
       <div className='container mx-auto max-w-6xl px-4 py-10'>
         <div className='flex flex-col items-start justify-between gap-6 md:flex-row md:items-center'>
           <div className='font-semibold tracking-tight'>
