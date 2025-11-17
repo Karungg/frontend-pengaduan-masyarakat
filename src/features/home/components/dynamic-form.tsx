@@ -3,7 +3,9 @@
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
+import { useCategories } from '@/hooks/categories/use-categories'
+import { useCreateComplaint } from '@/hooks/complaint/use-create-complaint'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -27,7 +29,6 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   complaintFormSchema,
   type ComplaintForm,
-  type ComplaintRequest,
   type TypeEnumType,
 } from '../data/schema'
 
@@ -53,6 +54,9 @@ export function DynamicForm() {
   const type = form.watch('type')
   const visibility = form.watch('visibility')
 
+  const { data: categories = [], isLoading: isLoadingCategories } =
+    useCategories()
+
   useEffect(() => {
     if (type === 'COMPLAINT') {
       form.setValue('aspiration', '')
@@ -62,32 +66,19 @@ export function DynamicForm() {
     }
   }, [type, form])
 
-  const onSubmit = (data: ComplaintForm) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const payload: ComplaintRequest = {
-      type: data.type,
-      visibility: data.visibility,
-      status: 'PENDING',
-      title: data.title,
-      description: data.description,
-      date: new Date().toISOString(),
-      location: data.type === 'COMPLAINT' ? data.location || '' : '-',
-      attachmentUrl: data.attachmentUrl || '',
-      aspiration: data.aspiration || '',
-      userId: data.userId || '',
-      agencyId: data.agencyId,
-      categoryId:
-        data.type === 'COMPLAINT'
-          ? data.categoryId || ''
-          : '00000000-0000-0000-0000-000000000000',
-    }
+  const handleSuccess = () => {
+    form.reset()
+  }
 
-    toast.success(
-      `${data.type === 'COMPLAINT' ? 'Pengaduan' : 'Aspirasi'} berhasil dikirim!`,
-      {
-        description: data.title,
-      }
-    )
+  const createComplaintMutation = useCreateComplaint({
+    setFormError: form.setError,
+    onSuccess: handleSuccess,
+  })
+
+  const isPending = createComplaintMutation.isPending
+
+  const onSubmit = (values: ComplaintForm) => {
+    createComplaintMutation.mutate(values)
   }
 
   return (
@@ -241,10 +232,46 @@ export function DynamicForm() {
                   name='categoryId'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>ID Kategori</FormLabel>
-                      <FormControl>
-                        <Input placeholder='Kategori' {...field} />
-                      </FormControl>
+                      <FormLabel>Kategori</FormLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={
+                          isLoadingCategories || categories.length === 0
+                        }
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder='Pilih kategori'>
+                              {isLoadingCategories ? (
+                                <div className='flex items-center gap-2'>
+                                  <Loader2 className='h-4 w-4 animate-spin' />
+                                  <span>Memuat...</span>
+                                </div>
+                              ) : field.value ? (
+                                categories.find((c) => c.id === field.value)
+                                  ?.name
+                              ) : (
+                                'Pilih kategori'
+                              )}
+                            </SelectValue>
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {categories.map((category) => (
+                            <SelectItem key={category.id} value={category.id}>
+                              <div className='flex flex-col'>
+                                <span className='font-medium'>
+                                  {category.name}
+                                </span>
+                                <span className='text-muted-foreground text-xs'>
+                                  {category.description}
+                                </span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -291,9 +318,9 @@ export function DynamicForm() {
               <Button
                 type='submit'
                 className='w-full md:w-auto'
-                disabled={form.formState.isSubmitting}
+                disabled={isPending}
               >
-                {form.formState.isSubmitting
+                {isPending
                   ? 'Mengirim...'
                   : `Kirim ${type === 'COMPLAINT' ? 'Pengaduan' : 'Aspirasi'}`}
               </Button>
