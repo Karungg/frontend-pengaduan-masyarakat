@@ -4,6 +4,8 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
+import { useAuthStore } from '@/stores/auth-store'
+import { useAgencies } from '@/hooks/agency/use-agency'
 import { useCategories } from '@/hooks/categories/use-categories'
 import { useCreateComplaint } from '@/hooks/complaint/use-create-complaint'
 import { Button } from '@/components/ui/button'
@@ -33,6 +35,8 @@ import {
 } from '../data/schema'
 
 export function DynamicForm() {
+  const user = useAuthStore((state) => state.auth.user)
+
   const form = useForm<ComplaintForm>({
     resolver: zodResolver(complaintFormSchema),
     defaultValues: {
@@ -45,8 +49,8 @@ export function DynamicForm() {
       categoryId: '',
       userName: '',
       userEmail: '',
-      userId: '123e4567-e89b-12d3-a456-426614174000',
-      agencyId: '987fcdeb-51a2-43c1-z567-123456789000',
+      userId: '',
+      agencyId: '',
       attachmentUrl: '',
     },
   })
@@ -56,6 +60,7 @@ export function DynamicForm() {
 
   const { data: categories = [], isLoading: isLoadingCategories } =
     useCategories()
+  const { data: agencies = [], isLoading: isLoadingAgencies } = useAgencies()
 
   useEffect(() => {
     if (type === 'COMPLAINT') {
@@ -65,6 +70,13 @@ export function DynamicForm() {
       form.setValue('location', '')
     }
   }, [type, form])
+
+  useEffect(() => {
+    if (user) {
+      form.setValue('userId', user.userId)
+      form.setValue('userEmail', user.email)
+    }
+  }, [user, form])
 
   const handleSuccess = () => {
     form.reset()
@@ -113,6 +125,51 @@ export function DynamicForm() {
                     <SelectContent>
                       <SelectItem value='COMPLAINT'>Pengaduan</SelectItem>
                       <SelectItem value='ASPIRATION'>Aspirasi</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='agencyId'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Instansi Tujuan</FormLabel>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={isLoadingAgencies || agencies.length === 0}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder='Pilih instansi'>
+                          {isLoadingAgencies ? (
+                            <div className='flex items-center gap-2'>
+                              <Loader2 className='h-4 w-4 animate-spin' />
+                              <span>Memuat...</span>
+                            </div>
+                          ) : field.value ? (
+                            agencies.find((a) => a.id === field.value)?.name
+                          ) : (
+                            'Pilih instansi'
+                          )}
+                        </SelectValue>
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {agencies.map((agency) => (
+                        <SelectItem key={agency.id} value={agency.id}>
+                          <div className='flex flex-col'>
+                            <span className='font-medium'>{agency.name}</span>
+                            <span className='text-muted-foreground text-xs'>
+                              {agency.address}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

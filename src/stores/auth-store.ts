@@ -8,6 +8,7 @@ const ACCESS_TOKEN =
 interface JWTPayload {
   sub: string
   email?: string
+  userId?: string
   role: string | string[]
   exp: number
   iat: number
@@ -16,6 +17,7 @@ interface JWTPayload {
 interface AuthUser {
   accountNo: string
   email: string
+  userId: string
   role: string[]
   exp: number
 }
@@ -47,6 +49,7 @@ const decodeJWT = (token: string): AuthUser | null => {
     return {
       accountNo: decoded.sub || '',
       email: decoded.email || '',
+      userId: decoded.userId || '',
       role: normalizeRole(decoded.role),
       exp: decoded.exp || 0,
     }
