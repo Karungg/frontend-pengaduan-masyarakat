@@ -3,6 +3,13 @@ import { useAuthStore } from '@/stores/auth-store'
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL
 
+export interface ErrorResponse {
+  code?: number
+  status?: string
+  message?: string
+  errors?: Record<string, string>
+}
+
 export const apiClient = axios.create({
   baseURL: baseUrl,
   headers: {
