@@ -132,50 +132,52 @@ export function DynamicForm() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name='agencyId'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Instansi Tujuan</FormLabel>
-                  <Select
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    disabled={isLoadingAgencies || agencies.length === 0}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Pilih instansi'>
-                          {isLoadingAgencies ? (
-                            <div className='flex items-center gap-2'>
-                              <Loader2 className='h-4 w-4 animate-spin' />
-                              <span>Memuat...</span>
+            {type === 'COMPLAINT' && (
+              <FormField
+                control={form.control}
+                name='agencyId'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Instansi Tujuan</FormLabel>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={isLoadingAgencies || agencies.length === 0}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Pilih instansi'>
+                            {isLoadingAgencies ? (
+                              <div className='flex items-center gap-2'>
+                                <Loader2 className='h-4 w-4 animate-spin' />
+                                <span>Memuat...</span>
+                              </div>
+                            ) : field.value ? (
+                              agencies.find((a) => a.id === field.value)?.name
+                            ) : (
+                              'Pilih instansi'
+                            )}
+                          </SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {agencies.map((agency) => (
+                          <SelectItem key={agency.id} value={agency.id}>
+                            <div className='flex flex-col'>
+                              <span className='font-medium'>{agency.name}</span>
+                              <span className='text-muted-foreground text-xs'>
+                                {agency.address}
+                              </span>
                             </div>
-                          ) : field.value ? (
-                            agencies.find((a) => a.id === field.value)?.name
-                          ) : (
-                            'Pilih instansi'
-                          )}
-                        </SelectValue>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {agencies.map((agency) => (
-                        <SelectItem key={agency.id} value={agency.id}>
-                          <div className='flex flex-col'>
-                            <span className='font-medium'>{agency.name}</span>
-                            <span className='text-muted-foreground text-xs'>
-                              {agency.address}
-                            </span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}
@@ -235,6 +237,72 @@ export function DynamicForm() {
               </div>
             )}
 
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+              <FormField
+                control={form.control}
+                name='categoryId'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kategori</FormLabel>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={isLoadingCategories || categories.length === 0}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Pilih kategori'>
+                            {isLoadingCategories ? (
+                              <div className='flex items-center gap-2'>
+                                <Loader2 className='h-4 w-4 animate-spin' />
+                                <span>Memuat...</span>
+                              </div>
+                            ) : field.value ? (
+                              categories.find((c) => c.id === field.value)?.name
+                            ) : (
+                              'Pilih kategori'
+                            )}
+                          </SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            <div className='flex flex-col'>
+                              <span className='font-medium'>
+                                {category.name}
+                              </span>
+                              <span className='text-muted-foreground text-xs'>
+                                {category.description}
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='location'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Lokasi</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='Kota/Kecamatan'
+                        maxLength={255}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
               name='title'
@@ -282,76 +350,7 @@ export function DynamicForm() {
               )}
             />
 
-            {type === 'COMPLAINT' ? (
-              <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-                <FormField
-                  control={form.control}
-                  name='categoryId'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Kategori</FormLabel>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        disabled={
-                          isLoadingCategories || categories.length === 0
-                        }
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder='Pilih kategori'>
-                              {isLoadingCategories ? (
-                                <div className='flex items-center gap-2'>
-                                  <Loader2 className='h-4 w-4 animate-spin' />
-                                  <span>Memuat...</span>
-                                </div>
-                              ) : field.value ? (
-                                categories.find((c) => c.id === field.value)
-                                  ?.name
-                              ) : (
-                                'Pilih kategori'
-                              )}
-                            </SelectValue>
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {categories.map((category) => (
-                            <SelectItem key={category.id} value={category.id}>
-                              <div className='flex flex-col'>
-                                <span className='font-medium'>
-                                  {category.name}
-                                </span>
-                                <span className='text-muted-foreground text-xs'>
-                                  {category.description}
-                                </span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name='location'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Lokasi</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder='Kota/Kecamatan'
-                          maxLength={255}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            ) : (
+            {type === 'ASPIRATION' && (
               <FormField
                 control={form.control}
                 name='aspiration'
