@@ -1,6 +1,5 @@
 import { UserActionDialog } from './users-action-dialog'
 import { UserDeleteDialog } from './users-delete-dialog'
-import { UserInviteDialog } from './users-invite-dialog'
 import { useUser } from './users-provider'
 
 export function UsersDialogs() {
@@ -11,12 +10,6 @@ export function UsersDialogs() {
         key='user-add'
         open={open === 'add'}
         onOpenChange={() => setOpen('add')}
-      />
-
-      <UserInviteDialog
-        key='user-invite'
-        open={open === 'invite'}
-        onOpenChange={() => setOpen('invite')}
       />
 
       {currentRow && (
