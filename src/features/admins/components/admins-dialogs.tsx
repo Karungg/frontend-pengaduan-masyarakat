@@ -1,6 +1,5 @@
 import { AdminActionDialog } from './admins-action-dialog'
 import { AdminDeleteDialog } from './admins-delete-dialog'
-import { AdminInviteDialog } from './admins-invite-dialog'
 import { useAdmin } from './admins-provider'
 
 export function AdminDialogs() {
@@ -11,12 +10,6 @@ export function AdminDialogs() {
         key='admin-add'
         open={open === 'add'}
         onOpenChange={() => setOpen('add')}
-      />
-
-      <AdminInviteDialog
-        key='admin-invite'
-        open={open === 'invite'}
-        onOpenChange={() => setOpen('invite')}
       />
 
       {currentRow && (
