@@ -1,15 +1,19 @@
-import type { AxiosError } from 'axios'
+import { type AxiosError } from 'axios'
+import { type UseFormSetError } from 'react-hook-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { type ErrorResponse } from '@/config/api'
 import { toast } from 'sonner'
+import { handleFormErrors, type ApiErrorResponse } from '@/lib/api-utils'
 import { createCategory } from '@/features/categories/data/api'
+import { type CategoryForm } from '@/features/categories/data/schema'
 
 type UseCreateCategoryOptions = {
   onSuccess?: () => void
+  setFormError?: UseFormSetError<CategoryForm>
 }
 
 export function useCreateCategory({
   onSuccess,
+  setFormError,
 }: UseCreateCategoryOptions = {}) {
   const queryClient = useQueryClient()
 
@@ -22,12 +26,8 @@ export function useCreateCategory({
       queryClient.invalidateQueries({ queryKey: ['categories'] })
       onSuccess?.()
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      toast.error('Gagal membuat kategori', {
-        description:
-          error.response?.data?.message ||
-          'Terjadi kesalahan, silakan coba lagi.',
-      })
+    onError: (error: AxiosError<ApiErrorResponse>) => {
+      handleFormErrors(error, setFormError)
     },
   })
 }

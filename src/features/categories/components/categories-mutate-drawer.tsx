@@ -1,6 +1,8 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { showSubmittedData } from '@/lib/show-submitted-data'
+import { Loader2 } from 'lucide-react'
+import { useCreateCategory } from '@/hooks/categories/use-create-category'
+import { useUpdateCategory } from '@/hooks/categories/use-update-category'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -44,10 +46,29 @@ export function CategoriesMutateDrawer({
     },
   })
 
-  const onSubmit = (data: CategoryForm) => {
+  const handleSuccess = () => {
     onOpenChange(false)
     form.reset()
-    showSubmittedData(data)
+  }
+
+  const { mutate: createCategory, isPending: isCreating } = useCreateCategory({
+    onSuccess: handleSuccess,
+    setFormError: form.setError,
+  })
+
+  const { mutate: updateCategory, isPending: isUpdating } = useUpdateCategory({
+    onSuccess: handleSuccess,
+    // setFormError: form.setError,
+  })
+
+  const isPending = isCreating || isUpdating
+
+  const onSubmit = (data: CategoryForm) => {
+    if (isUpdate && currentRow) {
+      updateCategory({ id: currentRow.id, data })
+    } else {
+      createCategory(data)
+    }
   }
 
   return (
@@ -112,7 +133,8 @@ export function CategoriesMutateDrawer({
           <SheetClose asChild>
             <Button variant='outline'>Close</Button>
           </SheetClose>
-          <Button form='categories-form' type='submit'>
+          <Button form='categories-form' type='submit' disabled={isPending}>
+            {isPending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
             Save changes
           </Button>
         </SheetFooter>
