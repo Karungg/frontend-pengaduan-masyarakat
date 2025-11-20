@@ -23,29 +23,21 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { priorities, statuses } from '../data/data'
-import { type Task } from '../data/schema'
+import { type Category } from '../data/schema'
+import { categoriesColumns as columns } from './categories-columns'
 import { DataTableBulkActions } from './data-table-bulk-actions'
-import { tasksColumns as columns } from './categories-columns'
 
-const route = getRouteApi('/_authenticated/admin/tasks/')
+const route = getRouteApi('/_authenticated/admin/categories/')
 
 type DataTableProps = {
-  data: Task[]
+  data: Category[]
 }
 
-export function TasksTable({ data }: DataTableProps) {
-  // Local UI-only states
+export function CategoriesTable({ data }: DataTableProps) {
   const [rowSelection, setRowSelection] = useState({})
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 
-  // Local state management for table (uncomment to use local-only state, not synced with URL)
-  // const [globalFilter, onGlobalFilterChange] = useState('')
-  // const [columnFilters, onColumnFiltersChange] = useState<ColumnFiltersState>([])
-  // const [pagination, onPaginationChange] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 })
-
-  // Synced with URL states (updated to match route search schema defaults)
   const {
     globalFilter,
     onGlobalFilterChange,
@@ -59,10 +51,7 @@ export function TasksTable({ data }: DataTableProps) {
     navigate: route.useNavigate(),
     pagination: { defaultPage: 1, defaultPageSize: 10 },
     globalFilter: { enabled: true, key: 'filter' },
-    columnFilters: [
-      { columnId: 'status', searchKey: 'status', type: 'array' },
-      { columnId: 'priority', searchKey: 'priority', type: 'array' },
-    ],
+    columnFilters: [],
   })
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -107,25 +96,13 @@ export function TasksTable({ data }: DataTableProps) {
   return (
     <div
       className={cn(
-        'max-sm:has-[div[role="toolbar"]]:mb-16', // Add margin bottom to the table on mobile when the toolbar is visible
+        'max-sm:has-[div[role="toolbar"]]:mb-16',
         'flex flex-1 flex-col gap-4'
       )}
     >
       <DataTableToolbar
         table={table}
         searchPlaceholder='Filter by title or ID...'
-        filters={[
-          {
-            columnId: 'status',
-            title: 'Status',
-            options: statuses,
-          },
-          {
-            columnId: 'priority',
-            title: 'Priority',
-            options: priorities,
-          },
-        ]}
       />
       <div className='overflow-hidden rounded-md border'>
         <Table>

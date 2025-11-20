@@ -1,36 +1,36 @@
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import { type Task } from '../data/schema'
+import { type Category } from '../data/schema'
 
-type TasksDialogType = 'create' | 'update' | 'delete' | 'import'
+type CategoriesDialogType = 'create' | 'update' | 'delete' | 'import'
 
-type TasksContextType = {
-  open: TasksDialogType | null
-  setOpen: (str: TasksDialogType | null) => void
-  currentRow: Task | null
-  setCurrentRow: React.Dispatch<React.SetStateAction<Task | null>>
+type CategoriesContextType = {
+  open: CategoriesDialogType | null
+  setOpen: (str: CategoriesDialogType | null) => void
+  currentRow: Category | null
+  setCurrentRow: React.Dispatch<React.SetStateAction<Category | null>>
 }
 
-const TasksContext = React.createContext<TasksContextType | null>(null)
+const CategoriesContext = React.createContext<CategoriesContextType | null>(null)
 
-export function TasksProvider({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = useDialogState<TasksDialogType>(null)
-  const [currentRow, setCurrentRow] = useState<Task | null>(null)
+export function CategoriesProvider({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useDialogState<CategoriesDialogType>(null)
+  const [currentRow, setCurrentRow] = useState<Category | null>(null)
 
   return (
-    <TasksContext value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <CategoriesContext value={{ open, setOpen, currentRow, setCurrentRow }}>
       {children}
-    </TasksContext>
+    </CategoriesContext>
   )
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useTasks = () => {
-  const tasksContext = React.useContext(TasksContext)
+export const useCategories = () => {
+  const categoriesContext = React.useContext(CategoriesContext)
 
-  if (!tasksContext) {
-    throw new Error('useTasks has to be used within <TasksContext>')
+  if (!categoriesContext) {
+    throw new Error('useCategories has to be used within <CategoriesProvider>')
   }
 
-  return tasksContext
+  return categoriesContext
 }

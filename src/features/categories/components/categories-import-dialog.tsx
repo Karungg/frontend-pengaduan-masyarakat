@@ -34,15 +34,15 @@ const formSchema = z.object({
     ),
 })
 
-type TaskImportDialogProps = {
+type CategoryImportDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function TasksImportDialog({
+export function CategoriesImportDialog({
   open,
   onOpenChange,
-}: TaskImportDialogProps) {
+}: CategoryImportDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { file: undefined },
@@ -74,13 +74,13 @@ export function TasksImportDialog({
     >
       <DialogContent className='gap-2 sm:max-w-sm'>
         <DialogHeader className='text-start'>
-          <DialogTitle>Import Tasks</DialogTitle>
+          <DialogTitle>Import Categories</DialogTitle>
           <DialogDescription>
-            Import tasks quickly from a CSV file.
+            Import categories quickly from a CSV file.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form id='task-import-form' onSubmit={form.handleSubmit(onSubmit)}>
+          <form id='category-import-form' onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name='file'
@@ -100,7 +100,7 @@ export function TasksImportDialog({
           <DialogClose asChild>
             <Button variant='outline'>Close</Button>
           </DialogClose>
-          <Button type='submit' form='task-import-form'>
+          <Button type='submit' form='category-import-form'>
             Import
           </Button>
         </DialogFooter>

@@ -1,29 +1,29 @@
 import { showSubmittedData } from '@/lib/show-submitted-data'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { TasksImportDialog } from './tasks-import-dialog'
-import { TasksMutateDrawer } from './tasks-mutate-drawer'
-import { useTasks } from './tasks-provider'
+import { CategoriesImportDialog } from './categories-import-dialog'
+import { CategoriesMutateDrawer } from './categories-mutate-drawer'
+import { useCategories } from './categories-provider'
 
-export function TasksDialogs() {
-  const { open, setOpen, currentRow, setCurrentRow } = useTasks()
+export function CategoriesDialogs() {
+  const { open, setOpen, currentRow, setCurrentRow } = useCategories()
   return (
     <>
-      <TasksMutateDrawer
-        key='task-create'
+      <CategoriesMutateDrawer
+        key='category-create'
         open={open === 'create'}
         onOpenChange={() => setOpen('create')}
       />
 
-      <TasksImportDialog
-        key='tasks-import'
+      <CategoriesImportDialog
+        key='categories-import'
         open={open === 'import'}
         onOpenChange={() => setOpen('import')}
       />
 
       {currentRow && (
         <>
-          <TasksMutateDrawer
-            key={`task-update-${currentRow.id}`}
+          <CategoriesMutateDrawer
+            key={`category-update-${currentRow.id}`}
             open={open === 'update'}
             onOpenChange={() => {
               setOpen('update')
@@ -35,7 +35,7 @@ export function TasksDialogs() {
           />
 
           <ConfirmDialog
-            key='task-delete'
+            key='category-delete'
             destructive
             open={open === 'delete'}
             onOpenChange={() => {
@@ -51,14 +51,14 @@ export function TasksDialogs() {
               }, 500)
               showSubmittedData(
                 currentRow,
-                'The following task has been deleted:'
+                'The following category has been deleted:'
               )
             }}
             className='max-w-md'
-            title={`Delete this task: ${currentRow.id} ?`}
+            title={`Delete this category: ${currentRow.id} ?`}
             desc={
               <>
-                You are about to delete a task with the ID{' '}
+                You are about to delete a category with the ID{' '}
                 <strong>{currentRow.id}</strong>. <br />
                 This action cannot be undone.
               </>
