@@ -1,24 +1,17 @@
 import { apiClient } from '@/config/api'
-
-export interface Category {
-  id: string
-  name: string
-  description: string
-  createdAt: string
-  updatedAt: string
-}
+import { type CategoryForm, type Category } from './schema'
 
 export interface CategoryListResponse {
-  code: number
+  code: string
   status: string
-  message?: string
+  message: string
   data: Category[]
 }
 
-export interface CategorySingleResponse {
-  code: number
+export interface CategoryResponse {
+  code: string
   status: string
-  message?: string
+  message: string
   data: Category
 }
 
@@ -28,19 +21,13 @@ export const getAllCategories = async (): Promise<Category[]> => {
 }
 
 export const getCategoryById = async (id: string): Promise<Category> => {
-  const response = await apiClient.get<CategorySingleResponse>(
-    `/categories/${id}`
-  )
+  const response = await apiClient.get<CategoryResponse>(`/categories/${id}`)
+
   return response.data.data
 }
 
-export const createCategory = async (
-  data: Omit<Category, 'id' | 'createdAt' | 'updatedAt'>
-): Promise<Category> => {
-  const response = await apiClient.post<CategorySingleResponse>(
-    '/categories',
-    data
-  )
+export const createCategory = async (data: CategoryForm): Promise<Category> => {
+  const response = await apiClient.post<CategoryResponse>('/categories', data)
   return response.data.data
 }
 
@@ -49,9 +36,9 @@ export const updateCategory = async ({
   data,
 }: {
   id: string
-  data: Omit<Category, 'id' | 'createdAt' | 'updatedAt'>
+  data: CategoryForm
 }): Promise<Category> => {
-  const response = await apiClient.put<CategorySingleResponse>(
+  const response = await apiClient.put<CategoryResponse>(
     `/categories/${id}`,
     data
   )
@@ -59,6 +46,5 @@ export const updateCategory = async ({
 }
 
 export const deleteCategory = async (id: string): Promise<void> => {
-  const response = await apiClient.delete<void>(`/categories/${id}`)
-  return response.data
+  await apiClient.delete<void>(`/categories/${id}`)
 }

@@ -13,7 +13,7 @@ export const users = Array.from({ length: 500 }, () => {
       .toLocaleLowerCase(),
     email: faker.internet.email({ firstName }).toLocaleLowerCase(),
     role: faker.helpers.arrayElement(['USER']),
-    createdAt: faker.date.past(),
-    updatedAt: faker.date.recent(),
+    createdAt: faker.date.past().toString(),
+    updatedAt: faker.date.recent().toString(),
   }
 })

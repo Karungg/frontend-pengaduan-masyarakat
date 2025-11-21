@@ -16,6 +16,7 @@ import {
   User,
   UserCheck,
   UserPen,
+  TagIcon,
 } from 'lucide-react'
 import { type SidebarData } from '../types'
 
@@ -71,6 +72,11 @@ export const sidebarData: SidebarData = {
               icon: User,
             },
           ],
+        },
+        {
+          title: 'Categories',
+          url: '/admin/categories',
+          icon: TagIcon,
         },
         {
           title: 'Tasks',

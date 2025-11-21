@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { getRouteApi } from '@tanstack/react-router'
 import {
   type SortingState,
   type VisibilityState,
@@ -12,7 +13,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
-import { type NavigateFn, useTableUrlState } from '@/hooks/use-table-url-state'
+import { useTableUrlState } from '@/hooks/use-table-url-state'
 import {
   Table,
   TableBody,
@@ -22,42 +23,35 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { type Admin } from '../data/schema'
-import { adminColumns as columns } from './admins-columns'
+import { type Category } from '../data/schema'
+import { categoriesColumns as columns } from './categories-columns'
 import { DataTableBulkActions } from './data-table-bulk-actions'
 
+const route = getRouteApi('/_authenticated/admin/categories/')
+
 type DataTableProps = {
-  data: Admin[]
-  search: Record<string, unknown>
-  navigate: NavigateFn
+  data: Category[]
 }
 
-export function AdminTable({ data, search, navigate }: DataTableProps) {
-  // Local UI-only states
+export function CategoriesTable({ data }: DataTableProps) {
   const [rowSelection, setRowSelection] = useState({})
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 
-  // Local state management for table (uncomment to use local-only state, not synced with URL)
-  // const [columnFilters, onColumnFiltersChange] = useState<ColumnFiltersState>([])
-  // const [pagination, onPaginationChange] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 })
-
-  // Synced with URL states (keys/defaults mirror admins route search schema)
   const {
+    globalFilter,
+    onGlobalFilterChange,
     columnFilters,
     onColumnFiltersChange,
     pagination,
     onPaginationChange,
     ensurePageInRange,
   } = useTableUrlState({
-    search,
-    navigate,
+    search: route.useSearch(),
+    navigate: route.useNavigate(),
     pagination: { defaultPage: 1, defaultPageSize: 10 },
-    globalFilter: { enabled: false },
-    columnFilters: [
-      // username per-column text filter
-      { columnId: 'username', searchKey: 'username', type: 'string' },
-    ],
+    globalFilter: { enabled: true, key: 'filter' },
+    columnFilters: [],
   })
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -66,53 +60,61 @@ export function AdminTable({ data, search, navigate }: DataTableProps) {
     columns,
     state: {
       sorting,
-      pagination,
+      columnVisibility,
       rowSelection,
       columnFilters,
-      columnVisibility,
+      globalFilter,
+      pagination,
     },
     enableRowSelection: true,
-    onPaginationChange,
-    onColumnFiltersChange,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
-    getPaginationRowModel: getPaginationRowModel(),
+    globalFilterFn: (row, _columnId, filterValue) => {
+      const id = String(row.getValue('id')).toLowerCase()
+      const title = String(row.getValue('title')).toLowerCase()
+      const searchValue = String(filterValue).toLowerCase()
+
+      return id.includes(searchValue) || title.includes(searchValue)
+    },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    onPaginationChange,
+    onGlobalFilterChange,
+    onColumnFiltersChange,
   })
 
+  const pageCount = table.getPageCount()
   useEffect(() => {
-    ensurePageInRange(table.getPageCount())
-  }, [table, ensurePageInRange])
+    ensurePageInRange(pageCount)
+  }, [pageCount, ensurePageInRange])
 
   return (
     <div
       className={cn(
-        'max-sm:has-[div[role="toolbar"]]:mb-16', // Add margin bottom to the table on mobile when the toolbar is visible
+        'max-sm:has-[div[role="toolbar"]]:mb-16',
         'flex flex-1 flex-col gap-4'
       )}
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter admins...'
-        searchKey='username'
+        searchPlaceholder='Filter by title or ID...'
       />
       <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className='group/row'>
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
                       key={header.id}
                       colSpan={header.colSpan}
                       className={cn(
-                        'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                         header.column.columnDef.meta?.className,
                         header.column.columnDef.meta?.thClassName
                       )}
@@ -135,13 +137,11 @@ export function AdminTable({ data, search, navigate }: DataTableProps) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className='group/row'
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
                       className={cn(
-                        'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                         cell.column.columnDef.meta?.className,
                         cell.column.columnDef.meta?.tdClassName
                       )}

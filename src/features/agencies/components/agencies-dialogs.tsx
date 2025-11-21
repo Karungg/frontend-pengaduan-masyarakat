@@ -1,6 +1,5 @@
 import { AgencyActionDialog } from './agencies-action-dialog'
 import { AgencyDeleteDialog } from './agencies-delete-dialog'
-import { AgencyInviteDialog } from './agencies-invite-dialog'
 import { useAgency } from './agencies-provider'
 
 export function AgencyDialogs() {
@@ -11,12 +10,6 @@ export function AgencyDialogs() {
         key='agency-add'
         open={open === 'add'}
         onOpenChange={() => setOpen('add')}
-      />
-
-      <AgencyInviteDialog
-        key='agency-invite'
-        open={open === 'invite'}
-        onOpenChange={() => setOpen('invite')}
       />
 
       {currentRow && (
