@@ -58,7 +58,7 @@ export function CategoriesMutateDrawer({
 
   const { mutate: updateCategory, isPending: isUpdating } = useUpdateCategory({
     onSuccess: handleSuccess,
-    // setFormError: form.setError,
+    setFormError: form.setError,
   })
 
   const isPending = isCreating || isUpdating
