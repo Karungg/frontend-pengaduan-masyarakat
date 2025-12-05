@@ -1,36 +1,44 @@
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import { type Task } from '../data/schema'
+import { type Complaint } from '../data/schema'
 
-type TasksDialogType = 'create' | 'update' | 'delete' | 'import'
+type ComplaintsDialogType = 'create' | 'update' | 'delete' | 'import'
 
-type TasksContextType = {
-  open: TasksDialogType | null
-  setOpen: (str: TasksDialogType | null) => void
-  currentRow: Task | null
-  setCurrentRow: React.Dispatch<React.SetStateAction<Task | null>>
+type ComplaintsContextType = {
+  open: ComplaintsDialogType | null
+  setOpen: (str: ComplaintsDialogType | null) => void
+  currentRow: Complaint | null
+  setCurrentRow: React.Dispatch<React.SetStateAction<Complaint | null>>
 }
 
-const TasksContext = React.createContext<TasksContextType | null>(null)
+const ComplaintsContext = React.createContext<ComplaintsContextType | null>(
+  null
+)
 
-export function TasksProvider({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = useDialogState<TasksDialogType>(null)
-  const [currentRow, setCurrentRow] = useState<Task | null>(null)
+export function ComplaintsProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const [open, setOpen] = useDialogState<ComplaintsDialogType>(null)
+  const [currentRow, setCurrentRow] = useState<Complaint | null>(null)
 
   return (
-    <TasksContext value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <ComplaintsContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
-    </TasksContext>
+    </ComplaintsContext.Provider>
   )
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useTasks = () => {
-  const tasksContext = React.useContext(TasksContext)
+export const useComplaints = () => {
+  const complaintsContext = React.useContext(ComplaintsContext)
 
-  if (!tasksContext) {
-    throw new Error('useTasks has to be used within <TasksContext>')
+  if (!complaintsContext) {
+    throw new Error('useComplaints has to be used within <ComplaintsContext>')
   }
 
-  return tasksContext
+  return complaintsContext
 }

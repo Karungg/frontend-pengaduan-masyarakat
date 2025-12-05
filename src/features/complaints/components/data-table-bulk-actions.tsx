@@ -17,8 +17,8 @@ import {
 } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
 import { priorities, statuses } from '../data/data'
-import { type Task } from '../data/schema'
-import { TasksMultiDeleteDialog } from './tasks-multi-delete-dialog'
+import { type Complaint } from '../data/schema'
+import { ComplaintsMultiDeleteDialog } from './complaints-multi-delete-dialog'
 
 type DataTableBulkActionsProps<TData> = {
   table: Table<TData>
@@ -31,12 +31,14 @@ export function DataTableBulkActions<TData>({
   const selectedRows = table.getFilteredSelectedRowModel().rows
 
   const handleBulkStatusChange = (status: string) => {
-    const selectedTasks = selectedRows.map((row) => row.original as Task)
+    const selectedComplaints = selectedRows.map(
+      (row) => row.original as Complaint
+    )
     toast.promise(sleep(2000), {
       loading: 'Updating status...',
       success: () => {
         table.resetRowSelection()
-        return `Status updated to "${status}" for ${selectedTasks.length} task${selectedTasks.length > 1 ? 's' : ''}.`
+        return `Status updated to "${status}" for ${selectedComplaints.length} complaint${selectedComplaints.length > 1 ? 's' : ''}.`
       },
       error: 'Error',
     })
@@ -44,12 +46,14 @@ export function DataTableBulkActions<TData>({
   }
 
   const handleBulkPriorityChange = (priority: string) => {
-    const selectedTasks = selectedRows.map((row) => row.original as Task)
+    const selectedComplaints = selectedRows.map(
+      (row) => row.original as Complaint
+    )
     toast.promise(sleep(2000), {
       loading: 'Updating priority...',
       success: () => {
         table.resetRowSelection()
-        return `Priority updated to "${priority}" for ${selectedTasks.length} task${selectedTasks.length > 1 ? 's' : ''}.`
+        return `Priority updated to "${priority}" for ${selectedComplaints.length} complaint${selectedComplaints.length > 1 ? 's' : ''}.`
       },
       error: 'Error',
     })
@@ -57,12 +61,14 @@ export function DataTableBulkActions<TData>({
   }
 
   const handleBulkExport = () => {
-    const selectedTasks = selectedRows.map((row) => row.original as Task)
+    const selectedComplaints = selectedRows.map(
+      (row) => row.original as Complaint
+    )
     toast.promise(sleep(2000), {
-      loading: 'Exporting tasks...',
+      loading: 'Exporting complaints...',
       success: () => {
         table.resetRowSelection()
-        return `Exported ${selectedTasks.length} task${selectedTasks.length > 1 ? 's' : ''} to CSV.`
+        return `Exported ${selectedComplaints.length} complaint${selectedComplaints.length > 1 ? 's' : ''} to CSV.`
       },
       error: 'Error',
     })
@@ -71,7 +77,7 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='task'>
+      <BulkActionsToolbar table={table} entityName='complaint'>
         <DropdownMenu>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -151,15 +157,15 @@ export function DataTableBulkActions<TData>({
               size='icon'
               onClick={() => handleBulkExport()}
               className='size-8'
-              aria-label='Export tasks'
-              title='Export tasks'
+              aria-label='Export complaints'
+              title='Export complaints'
             >
               <Download />
-              <span className='sr-only'>Export tasks</span>
+              <span className='sr-only'>Export complaints</span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Export tasks</p>
+            <p>Export complaints</p>
           </TooltipContent>
         </Tooltip>
 
@@ -170,20 +176,20 @@ export function DataTableBulkActions<TData>({
               size='icon'
               onClick={() => setShowDeleteConfirm(true)}
               className='size-8'
-              aria-label='Delete selected tasks'
-              title='Delete selected tasks'
+              aria-label='Delete selected complaints'
+              title='Delete selected complaints'
             >
               <Trash2 />
-              <span className='sr-only'>Delete selected tasks</span>
+              <span className='sr-only'>Delete selected complaints</span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Delete selected tasks</p>
+            <p>Delete selected complaints</p>
           </TooltipContent>
         </Tooltip>
       </BulkActionsToolbar>
 
-      <TasksMultiDeleteDialog
+      <ComplaintsMultiDeleteDialog
         open={showDeleteConfirm}
         onOpenChange={setShowDeleteConfirm}
         table={table}

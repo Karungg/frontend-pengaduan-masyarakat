@@ -23,12 +23,12 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { SelectDropdown } from '@/components/select-dropdown'
-import { type Task } from '../data/schema'
+import { type Complaint } from '../data/schema'
 
-type TaskMutateDrawerProps = {
+type ComplaintsMutateDrawerProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow?: Task
+  currentRow?: Complaint
 }
 
 const formSchema = z.object({
@@ -37,16 +37,16 @@ const formSchema = z.object({
   label: z.string().min(1, 'Please select a label.'),
   priority: z.string().min(1, 'Please choose a priority.'),
 })
-type TaskForm = z.infer<typeof formSchema>
+type ComplaintForm = z.infer<typeof formSchema>
 
-export function TasksMutateDrawer({
+export function ComplaintsMutateDrawer({
   open,
   onOpenChange,
   currentRow,
-}: TaskMutateDrawerProps) {
+}: ComplaintsMutateDrawerProps) {
   const isUpdate = !!currentRow
 
-  const form = useForm<TaskForm>({
+  const form = useForm<ComplaintForm>({
     resolver: zodResolver(formSchema),
     defaultValues: currentRow ?? {
       title: '',
@@ -56,7 +56,7 @@ export function TasksMutateDrawer({
     },
   })
 
-  const onSubmit = (data: TaskForm) => {
+  const onSubmit = (data: ComplaintForm) => {
     // do something with the form data
     onOpenChange(false)
     form.reset()
@@ -73,17 +73,17 @@ export function TasksMutateDrawer({
     >
       <SheetContent className='flex flex-col'>
         <SheetHeader className='text-start'>
-          <SheetTitle>{isUpdate ? 'Update' : 'Create'} Task</SheetTitle>
+          <SheetTitle>{isUpdate ? 'Update' : 'Create'} Complaint</SheetTitle>
           <SheetDescription>
             {isUpdate
-              ? 'Update the task by providing necessary info.'
-              : 'Add a new task by providing necessary info.'}
+              ? 'Update the complaint by providing necessary info.'
+              : 'Add a new complaint by providing necessary info.'}
             Click save when you&apos;re done.
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>
           <form
-            id='tasks-form'
+            id='complaints-form'
             onSubmit={form.handleSubmit(onSubmit)}
             className='flex-1 space-y-6 overflow-y-auto px-4'
           >
@@ -202,7 +202,7 @@ export function TasksMutateDrawer({
           <SheetClose asChild>
             <Button variant='outline'>Close</Button>
           </SheetClose>
-          <Button form='tasks-form' type='submit'>
+          <Button form='complaints-form' type='submit'>
             Save changes
           </Button>
         </SheetFooter>

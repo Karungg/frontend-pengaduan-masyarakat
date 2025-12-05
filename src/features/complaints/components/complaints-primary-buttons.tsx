@@ -1,9 +1,9 @@
 import { Download, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useTasks } from './tasks-provider'
+import { useComplaints } from './complaints-provider'
 
-export function TasksPrimaryButtons() {
-  const { setOpen } = useTasks()
+export function ComplaintsPrimaryButtons() {
+  const { setOpen } = useComplaints()
   return (
     <div className='flex gap-2'>
       <Button

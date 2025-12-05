@@ -24,17 +24,17 @@ import {
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { priorities, statuses } from '../data/data'
-import { type Task } from '../data/schema'
+import { type Complaint } from '../data/schema'
+import { complaintsColumns as columns } from './complaints-columns'
 import { DataTableBulkActions } from './data-table-bulk-actions'
-import { tasksColumns as columns } from './tasks-columns'
 
-const route = getRouteApi('/_authenticated/admin/tasks/')
+const route = getRouteApi('/_authenticated/admin/complaints/')
 
 type DataTableProps = {
-  data: Task[]
+  data: Complaint[]
 }
 
-export function TasksTable({ data }: DataTableProps) {
+export function ComplaintsTable({ data }: DataTableProps) {
   // Local UI-only states
   const [rowSelection, setRowSelection] = useState({})
   const [sorting, setSorting] = useState<SortingState>([])
