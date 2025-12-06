@@ -3,10 +3,10 @@ import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { statuses } from '../data/data'
-import { type Complaint } from '../data/schema'
+import { type ComplaintResponse } from '../data/schema'
 import { DataTableRowActions } from './data-table-row-actions'
 
-export const complaintsColumns: ColumnDef<Complaint>[] = [
+export const complaintsColumns: ColumnDef<ComplaintResponse>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -37,10 +37,42 @@ export const complaintsColumns: ColumnDef<Complaint>[] = [
       <DataTableColumnHeader column={column} title='Complaint ID' />
     ),
     cell: ({ row }) => (
-      <div className='w-[80px] truncate'>{row.getValue('id')}</div>
+      <div className='w-[80px] truncate' title={row.getValue('id')}>
+        {String(row.getValue('id')).slice(0, 8)}...
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
+  },
+  {
+    accessorKey: 'username',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Username' />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className='max-w-[150px] truncate'>
+          {row.original.username || 'N/A'}
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: 'type',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Type' />
+    ),
+    cell: ({ row }) => {
+      const type = row.getValue('type') as string
+      return (
+        <Badge variant={type === 'COMPLAINT' ? 'destructive' : 'default'}>
+          {type}
+        </Badge>
+      )
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: 'title',
@@ -49,11 +81,23 @@ export const complaintsColumns: ColumnDef<Complaint>[] = [
     ),
     meta: { className: 'ps-1', tdClassName: 'ps-4' },
     cell: ({ row }) => {
-      const categoryName = row.original.title
+      const categoryName = row.original.categoryName
+      const visibility = row.original.visibility
 
       return (
-        <div className='flex space-x-2'>
-          {categoryName && <Badge variant='outline'>{categoryName}</Badge>}
+        <div className='flex flex-col gap-1'>
+          <div className='flex items-center gap-2'>
+            {categoryName && (
+              <Badge variant='outline' className='text-xs'>
+                {categoryName}
+              </Badge>
+            )}
+            {visibility === 'PRIVATE' && (
+              <Badge variant='secondary' className='text-xs'>
+                Private
+              </Badge>
+            )}
+          </div>
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
             {row.getValue('title')}
           </span>
@@ -91,6 +135,34 @@ export const complaintsColumns: ColumnDef<Complaint>[] = [
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
+    },
+  },
+  {
+    accessorKey: 'agencyName',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Agency' />
+    ),
+    cell: ({ row }) => {
+      const agency = row.original.agencyName
+      return <div className='max-w-[150px] truncate'>{agency || 'N/A'}</div>
+    },
+  },
+  {
+    accessorKey: 'date',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Date' />
+    ),
+    cell: ({ row }) => {
+      const date = new Date(row.getValue('date'))
+      return (
+        <div className='text-sm'>
+          {date.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          })}
+        </div>
+      )
     },
   },
   {

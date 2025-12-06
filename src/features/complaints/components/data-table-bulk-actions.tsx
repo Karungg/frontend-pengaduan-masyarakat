@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { type Table } from '@tanstack/react-table'
-import { Trash2, CircleArrowUp, ArrowUpDown, Download } from 'lucide-react'
+import { Trash2, CircleArrowUp, Download } from 'lucide-react'
 import { toast } from 'sonner'
 import { sleep } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -16,8 +16,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import { priorities, statuses } from '../data/data'
-import { type Complaint } from '../data/schema'
+import { statuses } from '../data/data'
+import { type ComplaintResponse } from '../data/schema'
 import { ComplaintsMultiDeleteDialog } from './complaints-multi-delete-dialog'
 
 type DataTableBulkActionsProps<TData> = {
@@ -32,7 +32,7 @@ export function DataTableBulkActions<TData>({
 
   const handleBulkStatusChange = (status: string) => {
     const selectedComplaints = selectedRows.map(
-      (row) => row.original as Complaint
+      (row) => row.original as ComplaintResponse
     )
     toast.promise(sleep(2000), {
       loading: 'Updating status...',
@@ -45,24 +45,9 @@ export function DataTableBulkActions<TData>({
     table.resetRowSelection()
   }
 
-  const handleBulkPriorityChange = (priority: string) => {
-    const selectedComplaints = selectedRows.map(
-      (row) => row.original as Complaint
-    )
-    toast.promise(sleep(2000), {
-      loading: 'Updating priority...',
-      success: () => {
-        table.resetRowSelection()
-        return `Priority updated to "${priority}" for ${selectedComplaints.length} complaint${selectedComplaints.length > 1 ? 's' : ''}.`
-      },
-      error: 'Error',
-    })
-    table.resetRowSelection()
-  }
-
   const handleBulkExport = () => {
     const selectedComplaints = selectedRows.map(
-      (row) => row.original as Complaint
+      (row) => row.original as ComplaintResponse
     )
     toast.promise(sleep(2000), {
       loading: 'Exporting complaints...',
@@ -109,42 +94,6 @@ export function DataTableBulkActions<TData>({
                   <status.icon className='text-muted-foreground size-4' />
                 )}
                 {status.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <DropdownMenu>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant='outline'
-                  size='icon'
-                  className='size-8'
-                  aria-label='Update priority'
-                  title='Update priority'
-                >
-                  <ArrowUpDown />
-                  <span className='sr-only'>Update priority</span>
-                </Button>
-              </DropdownMenuTrigger>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Update priority</p>
-            </TooltipContent>
-          </Tooltip>
-          <DropdownMenuContent sideOffset={14}>
-            {priorities.map((priority) => (
-              <DropdownMenuItem
-                key={priority.value}
-                defaultValue={priority.value}
-                onClick={() => handleBulkPriorityChange(priority.value)}
-              >
-                {priority.icon && (
-                  <priority.icon className='text-muted-foreground size-4' />
-                )}
-                {priority.label}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>

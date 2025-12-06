@@ -23,7 +23,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { priorities, statuses } from '../data/data'
+import { statuses } from '../data/data'
 import { type Complaint } from '../data/schema'
 import { complaintsColumns as columns } from './complaints-columns'
 import { DataTableBulkActions } from './data-table-bulk-actions'
@@ -35,17 +35,10 @@ type DataTableProps = {
 }
 
 export function ComplaintsTable({ data }: DataTableProps) {
-  // Local UI-only states
   const [rowSelection, setRowSelection] = useState({})
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 
-  // Local state management for table (uncomment to use local-only state, not synced with URL)
-  // const [globalFilter, onGlobalFilterChange] = useState('')
-  // const [columnFilters, onColumnFiltersChange] = useState<ColumnFiltersState>([])
-  // const [pagination, onPaginationChange] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 })
-
-  // Synced with URL states (updated to match route search schema defaults)
   const {
     globalFilter,
     onGlobalFilterChange,
@@ -61,7 +54,7 @@ export function ComplaintsTable({ data }: DataTableProps) {
     globalFilter: { enabled: true, key: 'filter' },
     columnFilters: [
       { columnId: 'status', searchKey: 'status', type: 'array' },
-      { columnId: 'priority', searchKey: 'priority', type: 'array' },
+      { columnId: 'type', searchKey: 'type', type: 'array' }, // Added type filter
     ],
   })
 
@@ -84,9 +77,14 @@ export function ComplaintsTable({ data }: DataTableProps) {
     globalFilterFn: (row, _columnId, filterValue) => {
       const id = String(row.getValue('id')).toLowerCase()
       const title = String(row.getValue('title')).toLowerCase()
+      const description = String(row.original.description).toLowerCase()
       const searchValue = String(filterValue).toLowerCase()
 
-      return id.includes(searchValue) || title.includes(searchValue)
+      return (
+        id.includes(searchValue) ||
+        title.includes(searchValue) ||
+        description.includes(searchValue)
+      )
     },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -107,13 +105,13 @@ export function ComplaintsTable({ data }: DataTableProps) {
   return (
     <div
       className={cn(
-        'max-sm:has-[div[role="toolbar"]]:mb-16', // Add margin bottom to the table on mobile when the toolbar is visible
+        'max-sm:has-[div[role="toolbar"]]:mb-16',
         'flex flex-1 flex-col gap-4'
       )}
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter by title or ID...'
+        searchPlaceholder='Filter by title, ID, or description...'
         filters={[
           {
             columnId: 'status',
@@ -121,9 +119,12 @@ export function ComplaintsTable({ data }: DataTableProps) {
             options: statuses,
           },
           {
-            columnId: 'priority',
-            title: 'Priority',
-            options: priorities,
+            columnId: 'type',
+            title: 'Type',
+            options: [
+              { label: 'Complaint', value: 'COMPLAINT' },
+              { label: 'Aspiration', value: 'ASPIRATION' },
+            ],
           },
         ]}
       />

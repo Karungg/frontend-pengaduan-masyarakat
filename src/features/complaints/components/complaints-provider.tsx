@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import { type Complaint } from '../data/schema'
+import { type ComplaintResponse } from '../data/schema'
 
 type ComplaintsDialogType = 'create' | 'update' | 'delete' | 'import'
 
 type ComplaintsContextType = {
   open: ComplaintsDialogType | null
   setOpen: (str: ComplaintsDialogType | null) => void
-  currentRow: Complaint | null
-  setCurrentRow: React.Dispatch<React.SetStateAction<Complaint | null>>
+  currentRow: ComplaintResponse | null
+  setCurrentRow: React.Dispatch<React.SetStateAction<ComplaintResponse | null>>
 }
 
 const ComplaintsContext = React.createContext<ComplaintsContextType | null>(
@@ -21,7 +21,7 @@ export function ComplaintsProvider({
   children: React.ReactNode
 }) {
   const [open, setOpen] = useDialogState<ComplaintsDialogType>(null)
-  const [currentRow, setCurrentRow] = useState<Complaint | null>(null)
+  const [currentRow, setCurrentRow] = useState<ComplaintResponse | null>(null)
 
   return (
     <ComplaintsContext.Provider

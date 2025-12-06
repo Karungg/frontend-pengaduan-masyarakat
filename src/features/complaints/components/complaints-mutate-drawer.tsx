@@ -22,20 +22,27 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
+import { Textarea } from '@/components/ui/textarea'
 import { SelectDropdown } from '@/components/select-dropdown'
-import { type Complaint } from '../data/schema'
+import { type ComplaintResponse } from '../data/schema'
 
 type ComplaintsMutateDrawerProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow?: Complaint
+  currentRow?: ComplaintResponse
 }
 
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required.'),
-  status: z.string().min(1, 'Please select a status.'),
-  label: z.string().min(1, 'Please select a label.'),
-  priority: z.string().min(1, 'Please choose a priority.'),
+  description: z
+    .string()
+    .min(10, 'Description must be at least 10 characters.'),
+  type: z.enum(['COMPLAINT', 'ASPIRATION']),
+  visibility: z.enum(['PUBLIC', 'PRIVATE']),
+  status: z.enum(['PENDING', 'IN_PROGRESS', 'RESOLVED', 'REJECTED']),
+  location: z.string().optional(),
+  agencyId: z.string().min(1, 'Please select an agency.'),
+  categoryId: z.string().optional(),
 })
 type ComplaintForm = z.infer<typeof formSchema>
 
@@ -48,16 +55,30 @@ export function ComplaintsMutateDrawer({
 
   const form = useForm<ComplaintForm>({
     resolver: zodResolver(formSchema),
-    defaultValues: currentRow ?? {
-      title: '',
-      status: '',
-      label: '',
-      priority: '',
-    },
+    defaultValues: currentRow
+      ? {
+          title: currentRow.title,
+          description: currentRow.description,
+          type: currentRow.type,
+          visibility: currentRow.visibility,
+          status: currentRow.status,
+          location: currentRow.location || '',
+          agencyId: currentRow.agencyId,
+          categoryId: currentRow.categoryId || '',
+        }
+      : {
+          title: '',
+          description: '',
+          type: 'COMPLAINT',
+          visibility: 'PUBLIC',
+          status: 'PENDING',
+          location: '',
+          agencyId: '',
+          categoryId: '',
+        },
   })
 
   const onSubmit = (data: ComplaintForm) => {
-    // do something with the form data
     onOpenChange(false)
     form.reset()
     showSubmittedData(data)
@@ -85,8 +106,72 @@ export function ComplaintsMutateDrawer({
           <form
             id='complaints-form'
             onSubmit={form.handleSubmit(onSubmit)}
-            className='flex-1 space-y-6 overflow-y-auto px-4'
+            className='flex-1 space-y-4 overflow-y-auto px-4'
           >
+            <FormField
+              control={form.control}
+              name='type'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className='flex gap-4'
+                    >
+                      <FormItem className='flex items-center space-y-0 space-x-2'>
+                        <FormControl>
+                          <RadioGroupItem value='COMPLAINT' />
+                        </FormControl>
+                        <FormLabel className='font-normal'>Complaint</FormLabel>
+                      </FormItem>
+                      <FormItem className='flex items-center space-y-0 space-x-2'>
+                        <FormControl>
+                          <RadioGroupItem value='ASPIRATION' />
+                        </FormControl>
+                        <FormLabel className='font-normal'>
+                          Aspiration
+                        </FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='visibility'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Visibility</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className='flex gap-4'
+                    >
+                      <FormItem className='flex items-center space-y-0 space-x-2'>
+                        <FormControl>
+                          <RadioGroupItem value='PUBLIC' />
+                        </FormControl>
+                        <FormLabel className='font-normal'>Public</FormLabel>
+                      </FormItem>
+                      <FormItem className='flex items-center space-y-0 space-x-2'>
+                        <FormControl>
+                          <RadioGroupItem value='PRIVATE' />
+                        </FormControl>
+                        <FormLabel className='font-normal'>Private</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name='title'
@@ -100,6 +185,39 @@ export function ComplaintsMutateDrawer({
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name='description'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder='Enter description'
+                      rows={4}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='location'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder='Enter location' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name='status'
@@ -109,88 +227,44 @@ export function ComplaintsMutateDrawer({
                   <SelectDropdown
                     defaultValue={field.value}
                     onValueChange={field.onChange}
-                    placeholder='Select dropdown'
+                    placeholder='Select status'
                     items={[
-                      { label: 'In Progress', value: 'in progress' },
-                      { label: 'Backlog', value: 'backlog' },
-                      { label: 'Todo', value: 'todo' },
-                      { label: 'Canceled', value: 'canceled' },
-                      { label: 'Done', value: 'done' },
+                      { label: 'Pending', value: 'PENDING' },
+                      { label: 'In Progress', value: 'IN_PROGRESS' },
+                      { label: 'Resolved', value: 'RESOLVED' },
+                      { label: 'Rejected', value: 'REJECTED' },
                     ]}
                   />
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name='label'
+              name='agencyId'
               render={({ field }) => (
-                <FormItem className='relative'>
-                  <FormLabel>Label</FormLabel>
+                <FormItem>
+                  <FormLabel>Agency</FormLabel>
                   <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className='flex flex-col space-y-1'
-                    >
-                      <FormItem className='flex items-center'>
-                        <FormControl>
-                          <RadioGroupItem value='documentation' />
-                        </FormControl>
-                        <FormLabel className='font-normal'>
-                          Documentation
-                        </FormLabel>
-                      </FormItem>
-                      <FormItem className='flex items-center'>
-                        <FormControl>
-                          <RadioGroupItem value='feature' />
-                        </FormControl>
-                        <FormLabel className='font-normal'>Feature</FormLabel>
-                      </FormItem>
-                      <FormItem className='flex items-center'>
-                        <FormControl>
-                          <RadioGroupItem value='bug' />
-                        </FormControl>
-                        <FormLabel className='font-normal'>Bug</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
+                    <Input {...field} placeholder='Enter agency ID' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name='priority'
+              name='categoryId'
               render={({ field }) => (
-                <FormItem className='relative'>
-                  <FormLabel>Priority</FormLabel>
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
                   <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className='flex flex-col space-y-1'
-                    >
-                      <FormItem className='flex items-center'>
-                        <FormControl>
-                          <RadioGroupItem value='high' />
-                        </FormControl>
-                        <FormLabel className='font-normal'>High</FormLabel>
-                      </FormItem>
-                      <FormItem className='flex items-center'>
-                        <FormControl>
-                          <RadioGroupItem value='medium' />
-                        </FormControl>
-                        <FormLabel className='font-normal'>Medium</FormLabel>
-                      </FormItem>
-                      <FormItem className='flex items-center'>
-                        <FormControl>
-                          <RadioGroupItem value='low' />
-                        </FormControl>
-                        <FormLabel className='font-normal'>Low</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
+                    <Input
+                      {...field}
+                      placeholder='Enter category ID (optional)'
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

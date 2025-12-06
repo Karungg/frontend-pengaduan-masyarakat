@@ -6,10 +6,10 @@ import {
 } from './schema'
 
 export interface ComplaintListResponse {
-  code: number
-  status: string
-  message?: string
-  data: ComplaintResponse[]
+code: number
+status: string
+message?: string
+data: ComplaintResponse[]
 }
 
 export interface ComplaintSingleResponse {

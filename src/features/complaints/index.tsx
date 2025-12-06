@@ -1,3 +1,4 @@
+import { useComplaints } from '@/hooks/complaint/use-complaints'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -8,9 +9,26 @@ import { ComplaintsDialogs } from './components/complaints-dialogs'
 import { ComplaintsPrimaryButtons } from './components/complaints-primary-buttons'
 import { ComplaintsProvider } from './components/complaints-provider'
 import { ComplaintsTable } from './components/complaints-table'
-import { complaints } from './data/complaints'
 
-export function Complaints() {
+export default function Complaints() {
+  const { data, isLoading, isError } = useComplaints()
+
+  if (isLoading) {
+    return (
+      <div className='text-muted-foreground flex h-screen items-center justify-center'>
+        Loading complaints data...
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className='text-destructive flex h-screen items-center justify-center'>
+        Failed to load complaints. Please check your connection.
+      </div>
+    )
+  }
+
   return (
     <ComplaintsProvider>
       <Header fixed>
@@ -32,7 +50,10 @@ export function Complaints() {
           </div>
           <ComplaintsPrimaryButtons />
         </div>
-        <ComplaintsTable data={complaints} />
+
+        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-y-0 lg:space-x-12'>
+          <ComplaintsTable data={data || []} />
+        </div>
       </Main>
 
       <ComplaintsDialogs />

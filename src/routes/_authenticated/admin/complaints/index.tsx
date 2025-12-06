@@ -1,6 +1,6 @@
 import z from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
-import { Complaints } from '@/features/complaints'
+import Complaints from '@/features/complaints'
 import { priorities, statuses } from '@/features/tasks/data/data'
 
 const complaintSearchSchema = z.object({
