@@ -1,11 +1,20 @@
-import { showSubmittedData } from '@/lib/show-submitted-data'
 import { ConfirmDialog } from '@/components/confirm-dialog'
+import { useDeleteCategory } from '@/hooks/categories/use-delete-category'
 import { CategoriesImportDialog } from './categories-import-dialog'
 import { CategoriesMutateDrawer } from './categories-mutate-drawer'
 import { useCategories } from './categories-provider'
 
 export function CategoriesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useCategories()
+  const { mutate: deleteCategory, isPending: isDeleting } = useDeleteCategory({
+    onSuccess: () => {
+      setOpen(null)
+      setTimeout(() => {
+        setCurrentRow(null)
+      }, 500)
+    },
+  })
+
   return (
     <>
       <CategoriesMutateDrawer
@@ -45,21 +54,16 @@ export function CategoriesDialogs() {
               }, 500)
             }}
             handleConfirm={() => {
-              setOpen(null)
-              setTimeout(() => {
-                setCurrentRow(null)
-              }, 500)
-              showSubmittedData(
-                currentRow,
-                'The following category has been deleted:'
-              )
+              deleteCategory(currentRow.id)
             }}
+            disabled={isDeleting}
+            isLoading={isDeleting}
             className='max-w-md'
-            title={`Delete this category: ${currentRow.id} ?`}
+            title={`Delete category: ${currentRow.name}?`}
             desc={
               <>
-                You are about to delete a category with the ID{' '}
-                <strong>{currentRow.id}</strong>. <br />
+                You are about to delete the category{' '}
+                <strong>{currentRow.name}</strong>. <br />
                 This action cannot be undone.
               </>
             }
